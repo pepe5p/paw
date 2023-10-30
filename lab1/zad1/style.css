@@ -1,0 +1,110 @@
+.p1 {
+    color: rebeccapurple;
+    font-size: 1.1em;
+}
+
+.p2 {
+    background-color: aquamarine;
+    color: brown;
+    font-size: .7em;
+    width: 500px;
+    height: 200px;
+    padding: 15px;
+    margin: 15px;
+}
+
+.p3 {
+    background-image: url("bluegrass.jpg");
+    color: yellow;
+    text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+    width: 500px;
+    height: 100px;
+    padding: 15px;
+    overflow-x: hidden;
+    overflow-y: scroll;
+}
+
+.p4 {
+    background-color: #14556B;
+    color: whitesmoke;
+    font-size: .9em;
+}
+
+#blue_table {
+    width: 100%;
+    border-collapse: collapse;
+    border: 2px solid white;
+}
+
+#blue_table tr:nth-child(even) {
+    background-color: lightblue;
+}
+
+#blue_table tr:nth-child(odd) {
+    background-color: lightsteelblue;
+}
+
+#blue_table th, #blue_table td {
+    height: 50px;
+    border: 2px solid white;
+}
+
+#blue_table th {
+    background-color: dodgerblue;
+}
+
+#gray_table {
+    width: 100%;
+    border-collapse: collapse;
+    border: 2px solid black;
+}
+
+#gray_table tr {
+    background-color: lightgray;
+}
+
+#gray_table th, #gray_table td {
+    height: 50px;
+    border: 2px solid black;
+}
+
+#gray_table th {
+    background-color: dimgray;
+}
+
+#task-h p {
+    padding: 20px;
+}
+
+#task-h .first {
+    margin: 20px;
+    float: left;
+}
+
+#task-h .second {
+    margin: 20px;
+    float: right;
+}
+
+#task-i {
+    position: relative;
+}
+
+#task-i .second{
+    position: absolute;
+    left: 408px;
+}
+
+#task-i, #task-j{
+    position: relative;
+}
+
+#task-j .europe {
+    background-color: dodgerblue;
+    position: absolute;
+    top: 80px;
+}
+
+#task-j .asia {
+    background-color: red;
+}

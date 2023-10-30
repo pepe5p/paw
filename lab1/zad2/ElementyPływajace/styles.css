@@ -1,0 +1,43 @@
+body {
+	font-family: "Times New Roman", sans-serif;
+	font-size: 62.5%;
+	color: black;
+	background-color: #eeede4;
+	padding: 0;
+	margin: 0;
+}
+h1 {
+	font-size: 2.8em;
+	color: white;
+	padding: 5px 30px;
+	background-color: #14556B;
+	border-top: 4px solid #f5e8b9;
+	border-bottom: 4px solid #f5e8b9;
+}
+h2 {
+	font-size: 2em;
+}
+h3 {
+	font-size: 1.8em;
+}
+p, ul, ol {
+	font-size: 1.5em;
+	line-height: 130%;
+}
+
+aside {
+	float: right;
+	background-color: #f5e8b9;
+	border-top: 5px solid goldenrod;
+	width: 240px;
+	padding: 5px;
+	margin: 10px;
+}
+
+aside h3 {
+	text-align: center;
+}
+
+main {
+	padding: 0 30px;
+}

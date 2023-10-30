@@ -1,0 +1,119 @@
+body {
+    font: 1em Helvetica, Arial, sans-serif;
+    margin: 20px;
+    padding: 0;
+}
+
+.container {
+    display: grid;
+    grid-template-columns: auto auto auto auto;
+    grid-gap: 2rem;
+}
+
+
+@media (max-width: 1500px) {
+    .container {
+        display: grid;
+        grid-template-columns: auto auto auto;
+        grid-gap: 20px;
+    }
+}
+
+@media (max-width: 1000px) {
+    .container {
+        display: grid;
+        grid-template-columns: auto auto;
+    }
+}
+
+@media (max-width: 750px) {
+    .container {
+        display: grid;
+        grid-template-columns: auto;
+    }
+}
+
+@media (min-width: 1750px) {
+    .container {
+        display: grid;
+        grid-template-columns: auto auto auto auto auto;
+    }
+}
+
+.item {
+    -webkit-box-shadow: 4px 4px 5px 0 rgb(126, 126, 126);
+    -moz-box-shadow: 4px 4px 5px 0 rgb(126, 126, 126);
+    box-shadow: 4px 4px 5px 0 rgb(126, 126, 126);
+    border-radius: 20px;
+    overflow: hidden;
+    background-color: #f2f2f2;
+}
+
+figure {
+    width: 100%;
+    height: 200px;
+    margin: 0;
+}
+
+img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+article {
+    padding: 20px;
+}
+
+article h1 {
+    font-size: 1.6em;
+    margin: 0;
+    color: black;
+    font-weight: bold;
+}
+
+article .description {
+    font-size: 1.2em;
+    margin: 0;
+    color: #d55d5d;
+    font-weight: bold;
+}
+
+article .text {
+    font-size: 1em;
+    color: #4d4d4d;
+}
+
+article .bottom-panel {
+    padding-top: 20px;
+    border-top: 2px solid #e7e7e7;
+    display: flex;
+    justify-content: space-between;
+}
+
+article .bottom-panel .comments, .likes {
+    color: #4d4d4d;
+}
+
+article .bottom-panel .social{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+article .bottom-panel a {
+    text-align: center;
+    background-color: #d55d5d;
+    color: white;
+    text-decoration: none;
+    padding: 15px;
+}
+
+article .bottom-panel a:hover {
+    background-color: #b44b4b;
+}
+
+article .bottom-panel img {
+    width: 1.1em;
+    height: 1.1em;
+}
