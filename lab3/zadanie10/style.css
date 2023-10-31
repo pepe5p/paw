@@ -1,0 +1,124 @@
+body {
+	background-color: yellow;
+	margin: 0;
+	color: white;
+}
+
+.menu {
+	margin-top: 20px;
+	margin-right: auto;
+	margin-left: auto;
+	width: 30em;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	border-radius: 10px;
+	overflow: hidden;
+}
+
+button {
+	color: white;
+	width: 100%;
+	font-size: 1em;
+	background-color: hotpink;
+	border: none;
+	text-align: left;
+	padding: 15px;
+	cursor: pointer;
+	position: relative;
+	z-index: 3;
+}
+
+button:after {
+	display: none;
+	position: absolute;
+	bottom: -10px;
+	right: 20px;
+	content: "";
+	border-right: 10px solid transparent;
+	border-left: 10px solid transparent;
+	border-top: 10px solid darkred;
+	z-index: 2;
+}
+
+button:focus {
+	background-color: darkred;
+}
+
+button:focus:after {
+	display: block;
+}
+
+button:focus + .sub-menu {
+	max-height: 200px;
+}
+
+ul {
+	width: 100%;
+	margin: 0;
+	padding: 0;
+}
+
+li {
+	width: 100%;
+	list-style-type: none;
+}
+
+.sub-menu {
+	max-height: 0;
+	transition: max-height 0.5s ease-in-out;
+}
+
+.sub-menu > li {
+	box-sizing: border-box;
+	width: 100%;
+	background-color: blue;
+	padding: 15px 30px;
+	position: relative;
+	cursor: pointer;
+	z-index: 1;
+}
+
+.sub-menu > li:before {
+	box-sizing: border-box;
+	position: absolute;
+	display: none;
+	content: "";
+	width: 100%;
+	height: 100%;
+	top: 0;
+	left: 0;
+	border-right: 25px solid transparent;
+	border-left: 25px solid transparent;
+	border-top: 25px solid blue;
+}
+
+.sub-menu > li:after {
+	box-sizing: border-box;
+	position: absolute;
+	display: none;
+	content: "";
+	width: 100%;
+	height: 100%;
+	bottom: 0;
+	left: 0;
+	border-right: 25px solid transparent;
+	border-left: 25px solid transparent;
+	border-bottom: 25px solid #5c88f3;
+}
+
+.sub-menu > li:hover {
+	width: 100%;
+	background-color: yellow;
+}
+
+.sub-menu > li:hover:before {
+	display: block;
+	z-index: -1;
+}
+
+.sub-menu > li:hover:after {
+	display: block;
+	z-index: -1;
+}

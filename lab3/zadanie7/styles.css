@@ -1,0 +1,104 @@
+* {
+	box-sizing: border-box;
+	color: #404040;
+}
+
+body {
+	height: 150vh;
+	margin: 0;
+}
+
+main {
+	margin: 10px;
+}
+
+.your-camera {
+	position: absolute;
+	top: 1rem;
+	left: 1rem;
+	border-radius: 5px;
+	border: 1px solid #565656;
+	overflow: hidden;
+}
+
+.your-camera img {
+	height: 100%;
+}
+
+.video-call {
+	box-sizing: content-box;
+	width: 100%;
+	border-radius: 5px;
+	background-color: #002a42;
+	position: relative;
+	display: flex;
+	justify-content: center;
+	overflow: hidden;
+}
+
+.main-camera {
+	width: 800px;
+	min-height: 60vh;
+	overflow: hidden;
+	display: flex;
+	justify-content: center;
+}
+
+.main-camera img {
+	height: 100%;
+}
+
+.interaction-toolbar {
+	position: absolute;
+	bottom: 0;
+	width: 100%;
+	height: auto;
+	display: flex;
+	justify-content: center;
+}
+
+.interaction-toolbar img {
+	margin: 1rem;
+	padding: 1rem;
+	background-color: white;
+	border-radius: 100%;
+	max-height: 58px;
+}
+
+.exit-call-label img {
+	background-color: #b73232;;
+}
+
+.microphone, .camera {
+	display: none;
+}
+
+.mic-on {
+	display: none;
+}
+
+.microphone:checked + label > .mic-off {
+	display: none;
+}
+
+.microphone:checked + label > .mic-on {
+	display: block;
+}
+
+.camera-on {
+	display: none;
+}
+
+.camera:checked + label > .camera-off {
+	display: none;
+}
+
+.camera:checked + label > .camera-on {
+	display: block;
+}
+
+@media (max-width: 800px) {
+	.your-camera {
+		display: none;
+	}
+}

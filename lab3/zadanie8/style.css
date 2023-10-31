@@ -1,0 +1,134 @@
+body {
+	font: 1em Helvetica, Arial, sans-serif;
+	margin: 0;
+	color: #5e5e5e;
+	background-color: #eeeeee;;
+}
+
+h1 {
+	letter-spacing: 1px;
+	background: linear-gradient(to right, #61c95d, #508d6f);
+	-webkit-background-clip: text;
+	-webkit-text-fill-color: transparent;
+	margin-left: auto;
+	margin-right: auto;
+	grid-column: 1 / span 2;
+}
+
+.text-container {
+	padding: 40px;
+}
+
+.text-container article {
+	margin: 40px 0;
+}
+
+h2 {
+	font-size: 1.1em;
+}
+
+.button-more {
+	text-decoration: none;
+	border: none;
+	font-size: 1em;
+	color: #61c95d;
+	border-bottom: 1px solid #61c95d;
+}
+
+.button-more:hover {
+	text-decoration: underline;
+}
+
+main {
+	display: grid;
+	grid-template-columns: auto;
+	grid-template-rows: auto auto auto;
+}
+
+.images-container {
+	position: relative;
+	display: flex;
+	flex-wrap: nowrap;
+	justify-content: center;
+	align-items: center;
+	grid-row: 3;
+}
+
+.images-container div {
+	max-width: 33%;
+}
+
+.images-container img {
+	width: 100%;
+}
+
+#image-one {
+	position: absolute;
+	z-index: 0;
+	transform: translate(-70%, 70%);
+}
+
+#image-two {
+	position: absolute;
+	z-index: 2;
+	transform: translate(5%, 50%);
+}
+
+#image-three {
+	position: absolute;
+	z-index: 0;
+	transform: translate(80%, 70%);
+}
+
+.images-container div:hover{
+	z-index: 4 !important;
+}
+
+.images-container div:hover:before{
+	display: block;
+}
+
+.images-container div:before {
+	position: absolute;
+	display: none;
+	width: 110%;
+	height: 110%;
+	z-index: 100;
+	border: 12px solid #61c95d;
+	border-radius: 30px;
+	content: "";
+	top: -24px;
+	left: -24px;
+}
+
+@media (min-width: 1000px) {
+
+	main {
+		grid-template-columns: 50% 50%;
+		grid-template-rows: auto auto;
+	}
+
+	.images-container {
+		grid-column: 2;
+		grid-row: 2;
+	}
+
+	.images-container div {
+		max-width: 50%;
+	}
+
+	#image-one {
+		z-index: 0;
+		transform: translate(-50%, -20%);
+	}
+
+	#image-two {
+		z-index: 1;
+		transform: translate(30%, 0);
+	}
+
+	#image-three {
+		z-index: 2;
+		transform: translate(-10%, 50%);
+	}
+}

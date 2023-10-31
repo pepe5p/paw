@@ -1,0 +1,142 @@
+html {
+	background-color: #f6f6f6;
+}
+
+body {
+	font-family: Arial, sans-serif;
+	font-weight: lighter;
+	color: #f0f0f0;
+	margin: 0;
+}
+
+main {
+	background: linear-gradient(-3deg, transparent 20%, rgb(0, 106, 255) 0);
+	height: 50vh;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 10vw;
+}
+
+.text-container {
+	width: 80vw;
+	align-items: center;
+	animation: slideInFromTop 1s ease-in-out;
+	display: flex;
+	flex-wrap: nowrap;
+	flex-direction: column;
+}
+
+h1 {
+	font-size: 2em;
+	font-weight: lighter;
+}
+
+.form-container {
+	width: 80vw;
+	display: flex;
+	animation: slideInFromBottom 1s ease-in-out;
+	color: #8c8c8c;
+	box-shadow: 0 0 12px 0 rgb(133, 133, 133);
+	border-radius: 10px;
+}
+
+h2 {
+	font-size: 1.2em;
+	font-weight: lighter;
+}
+
+form {
+	width: 100%;
+	display: flex;
+	flex-direction: column;
+	background-color: #f6f6f6;
+	padding: 2rem 2rem 2rem;
+	border-radius: 10px;
+}
+
+label {
+	display: flex;
+	flex-direction: column;
+}
+
+input {
+	background-color: transparent;
+	border: none;
+	margin: 1em 0;
+	border-bottom: 2px solid #e3e3e3;
+	font-weight: normal;
+}
+
+button {
+	text-decoration: none;
+	cursor: pointer;
+	border: 1px solid #f0f0f0;
+	padding: 10px 25px;
+	width: fit-content;
+	border-radius: 5px;
+	color: #f0f0f0;
+	display: flex;
+	flex-direction: column;
+	margin: 1em 0;
+	background-color: rgb(0, 106, 255);
+}
+
+@keyframes slideInFromTop {
+	0% {
+		transform: translateY(-100%);
+	}
+
+	100% {
+		transform: translateY(0);
+	}
+}
+
+@keyframes slideInFromBottom {
+	0% {
+		transform: translateY(100%);
+	}
+
+	100% {
+		transform: translateY(0);
+	}
+}
+
+@keyframes slideInFromLeft {
+	0% {
+		transform: translateX(-100%);
+	}
+
+	100% {
+		transform: translateX(0);
+	}
+}
+
+@keyframes slideInFromRight {
+	0% {
+		transform: translateX(100%);
+	}
+
+	100% {
+		transform: translateX(0);
+	}
+}
+
+
+@media (min-width: 600px) {
+	main {
+		flex-direction: row;
+		justify-content: center;
+	}
+
+	.text-container {
+		width: 40vw;
+		animation: slideInFromLeft 1s ease-in-out;
+		align-items: normal;
+	}
+
+	.form-container {
+		width: 30vw;
+		animation: slideInFromRight 1s ease-in-out;
+	}
+}
