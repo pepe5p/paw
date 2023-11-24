@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="pl">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Zadanie 3.</title>
+
+    <link href="styles.css" rel="stylesheet">
+    <script src="script.js" defer></script>
+</head>
+
+<body>
+    <!-- <button onclick="displayMalopolskieCities()">Wyświetl miasta z małopolskiego</button>
+    <button onclick="displayCitiesWithTwoA()">Wyświetl miasta z dwoma 'a' w nazwie</button>
+    <button onclick="displayFifthCity()">Wyświetl piąte miasto pod kątem gęstości zaludnienia</button>
+    <button onclick="addCityToAbove100000Cities()">Dodaj 'city' do miast powyżej 100000 mieszkańców</button>
+    <button onclick="comparePopulation()">Porównaj liczbę miast powyżej/pod 80000 mieszkańców</button>
+    <button onclick="calculateAverageAreaForPCities()">Oblicz średnią powierzchnię miast z powiatów zaczynających się na
+        „P”</button>
+    <button onclick="checkIfPomorskieCitiesAbove5000()">Sprawdź czy miasta z Pomorskiego są większe od 5000
+        osób</button> -->
+
+    <section id="malopolskieCities">
+        <h2>Miasta z województwa małopolskiego</h2>
+        <ul id="malopolskieList"></ul>
+    </section>
+
+    <section id="citiesWithTwoA">
+        <h2>Miasta z dwoma znakami 'a' w nazwie</h2>
+        <ul id="twoAList"></ul>
+    </section>
+
+    <section id="fifthCity">
+        <h2>Piąte pod kątem gęstości zaludnienia miasto w Polsce</h2>
+        <p id="fifthCityInfo"></p>
+    </section>
+
+    <section id="above100000Cities">
+        <h2>Miasta powyżej 100000 mieszkańców</h2>
+        <ul id="above100000List"></ul>
+    </section>
+
+    <section id="populationComparison">
+        <h2>Porównanie liczby miast powyżej i poniżej 80000 mieszkańców</h2>
+        <p id="populationComparisonInfo"></p>
+    </section>
+
+    <section id="averageArea">
+        <h2>Średnia powierzchnia miast z powiatów zaczynających się na literkę „P”</h2>
+        <p id="averageAreaInfo"></p>
+    </section>
+
+    <section id="pomorskieCities">
+        <h2>Wszystkie miasta z województwa pomorskiego powyżej 5000 osób</h2>
+        <div id="pomorskieCitiesInfo"></div>
+    </section>
+
+    <script src="script.js"></script>
+
+
+</body>
+
+</html>
