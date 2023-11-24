@@ -15,19 +15,11 @@
     <form id="phone-book-form">
         <div>
             <label for="name">IMIĘ I NAZWISKO</label>
-            <input
-                    type="text"
-                    id="name"
-                    required pattern="^[A-Z][a-z]{1,}\s[A-Z][a-z]{1,}(-[A-Z][a-z]{1,})?$"
-            >
+            <input type="text" id="name">
         </div>
         <div>
             <label for="phone-number">TELEFON</label>
-            <input
-                type="text"
-                id="phone-number"
-                required pattern="^(\+\d{3})?(\s*\d){9}$"
-            >
+            <input type="text" id="phone-number">
         </div>
         <button type="submit">Dodaj</button>
     </form>

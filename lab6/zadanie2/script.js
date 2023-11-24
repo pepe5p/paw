@@ -6,10 +6,27 @@ form.addEventListener('submit', function (event) {
     const nameInput = document.getElementById('name');
     const phoneNumberInput = document.getElementById('phone-number');
 
-    if (!nameInput.checkValidity()) {
-        return;
+    const nameRegex = /^[A-Z][a-z]+\s[A-Z][a-z]+(-[A-Z][a-z]+)?$/;
+    const phoneNumberRegex = /^(\+\d{3})?(\s?\d){9}$/;
+
+    const isNameValid = nameInput.value.match(nameRegex);
+    const isPhoneNumberValid = phoneNumberInput.value.match(phoneNumberRegex);
+
+    if (isNameValid) {
+        nameInput.classList.remove('invalid');
     }
-    if (!phoneNumberInput.checkValidity()) {
+    else {
+        nameInput.classList.add('invalid');
+    }
+
+    if (isPhoneNumberValid) {
+        phoneNumberInput.classList.remove('invalid');
+    }
+    else {
+        phoneNumberInput.classList.add('invalid');
+    }
+
+    if (!isNameValid || !isPhoneNumberValid) {
         return;
     }
 
@@ -20,7 +37,7 @@ form.addEventListener('submit', function (event) {
             <div class="name">${nameInput.value}</div>
             <div class="phone-number">${phoneNumberInput.value}</div>
         </div>
-        <button class="delete-entry" onclick="removeBookItem(event)">X</button>
+        <button class="delete-entry" onclick="removeBookItem(event)">Usuń</button>
     `;
     bookItems.appendChild(entry);
 });

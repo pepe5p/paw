@@ -18,6 +18,10 @@ section {
     box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
 }
 
-section > ul {
-    font-size: 0.6em;
+section > div {
+    font-size: 0.8em;
+    display: flex;
+    column-gap: 15px;
+    flex-wrap: wrap;
+    row-gap: 0;
 }

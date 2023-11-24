@@ -2,6 +2,7 @@ body {
     font-family: Arial, sans-serif;
     padding: 20px;
     background-color: #dfebff;
+    margin: 0;
 }
 
 h1 {
@@ -9,6 +10,10 @@ h1 {
 }
 
 form {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    right: 20px;
     background-color: #fff;
     padding: 20px;
     box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
@@ -33,6 +38,10 @@ form input {
     height: 35px;
 }
 
+form input.invalid {
+    border-color: red;
+}
+
 form button {
     margin-top: 18px;
 }
@@ -47,10 +56,16 @@ button {
     height: 35px;
 }
 
+#phone-book-items {
+    display: flex;
+    flex-direction: column;
+    row-gap: 10px;
+    margin-bottom: 120px;
+}
+
 .phone-book-item {
     background-color: #fff;
     padding: 20px;
-    margin-bottom: 10px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     display: flex;
     flex-direction: row;

@@ -1,7 +1,7 @@
 async function displayTaskA(data) {
     const taskAInfo = document.getElementById('task-a-info');
     data.filter(city => city.province === 'małopolskie').forEach(city => {
-        const listItem = document.createElement('li');
+        const listItem = document.createElement('p');
         listItem.textContent = city.name;
         taskAInfo.appendChild(listItem);
     });
@@ -14,7 +14,7 @@ async function displayTaskB(data) {
         const countA = lowercaseName.split('a').length - 1;
         return countA === 2 && lowercaseName.indexOf('a') !== lowercaseName.lastIndexOf('a');
     }).forEach(city => {
-        const listItem = document.createElement('li');
+        const listItem = document.createElement('p');
         listItem.textContent = city.name;
         taskBInfo.appendChild(listItem);
     });
@@ -30,7 +30,7 @@ async function displayTaskD(data) {
     const above100000Cities = data.filter(city => city.people > 100000);
     const taskDInfo = document.getElementById('task-d-info');
     above100000Cities.forEach(city => {
-        const listItem = document.createElement('li');
+        const listItem = document.createElement('p');
         listItem.textContent = `${city.name} city`;
         taskDInfo.appendChild(listItem);
     });
@@ -47,12 +47,15 @@ async function displayTaskE(data) {
 }
 
 async function displayTaskF(data) {
-    const pCities = data.filter(city => city.township.startsWith('P'));
+    const pCities = data.filter(city => city.township.startsWith('p') || city.township.startsWith('P'));
     const totalArea = pCities.reduce((acc, city) => acc + city.area, 0);
     const averageArea = totalArea / pCities.length;
     const taskFInfo = document.getElementById('task-f-info');
     taskFInfo.innerHTML = `
-        <p>Średnia powierzchnia miast z powiatów zaczynających się na literę „P”: ${averageArea.toFixed(2)} km².</p>
+        <p>
+            Średnia powierzchnia miast z powiatów zaczynających się na literę „P”: 
+            ${averageArea.toFixed(2)} km².
+        </p>
     `;
 }
 
@@ -74,17 +77,15 @@ async function displayTaskG(data) {
     `;
 }
 
-async function fetchData() {
+async function runTasks() {
+    let data;
     try {
         const response = await fetch('source/city.json');
-        return await response.json();
+        data = await response.json();
     } catch (error) {
         console.error(error);
+        return;
     }
-}
-
-async function runTasks() {
-    const data = await fetchData();
     displayTaskA(data).then(() => console.log('Task A done'));
     displayTaskB(data).then(() => console.log('Task B done'));
     displayTaskC(data).then(() => console.log('Task C done'));
