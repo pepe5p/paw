@@ -11,18 +11,26 @@
 </head>
 
 <body>
-    <h1>Green Book</h1>
-    <form id="phoneBookForm">
-        <label for="name">Name:</label>
-        <input type="text" id="name" required pattern="^[A-Z][a-zA-Z]*\s[A-Z][a-zA-Z]*(-[A-Z][a-zA-Z]*)?$"
-            placeholder="First Name Last Name">
-        <br>
-        <label for="phoneNumber">Phone Number:</label>
-        <input type="text" id="phoneNumber" required pattern="^(\+\d{1,3}\s?)?(\d\s?){9}$" placeholder="+048 123456789">
-        <br>
-        <button type="submit">Add</button>
+    <div id="phone-book-items"></div>
+    <form id="phone-book-form">
+        <div>
+            <label for="name">IMIĘ I NAZWISKO</label>
+            <input
+                    type="text"
+                    id="name"
+                    required pattern="^[A-Z][a-z]{1,}\s[A-Z][a-z]{1,}(-[A-Z][a-z]{1,})?$"
+            >
+        </div>
+        <div>
+            <label for="phone-number">TELEFON</label>
+            <input
+                type="text"
+                id="phone-number"
+                required pattern="^(\+\d{3})?(\s*\d){9}$"
+            >
+        </div>
+        <button type="submit">Dodaj</button>
     </form>
-    <div id="phoneBookEntries"></div>
 </body>
 
 </html>

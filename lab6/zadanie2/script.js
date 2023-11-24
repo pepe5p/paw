@@ -1,30 +1,31 @@
-const form = document.getElementById('phoneBookForm');
-const entriesContainer = document.getElementById('phoneBookEntries');
+const form = document.getElementById('phone-book-form');
+const bookItems = document.getElementById('phone-book-items');
 
 form.addEventListener('submit', function (event) {
     event.preventDefault();
     const nameInput = document.getElementById('name');
-    const phoneNumberInput = document.getElementById('phoneNumber');
+    const phoneNumberInput = document.getElementById('phone-number');
 
-    if (nameInput.checkValidity() && phoneNumberInput.checkValidity()) {
-        const name = nameInput.value;
-        const phoneNumber = phoneNumberInput.value;
-
-        const entry = document.createElement('div');
-        entry.className = 'entry';
-        entry.innerHTML = `
-                    <span>${name} ${phoneNumber}</span>
-                    <button class="removeEntryButton" onclick="removeEntry(event)">🗑️</button>
-                `;
-
-        entriesContainer.appendChild(entry);
-
-        nameInput.value = '';
-        phoneNumberInput.value = '';
+    if (!nameInput.checkValidity()) {
+        return;
     }
+    if (!phoneNumberInput.checkValidity()) {
+        return;
+    }
+
+    const entry = document.createElement('div');
+    entry.className = 'phone-book-item';
+    entry.innerHTML = `
+        <div class="item-info">
+            <div class="name">${nameInput.value}</div>
+            <div class="phone-number">${phoneNumberInput.value}</div>
+        </div>
+        <button class="delete-entry" onclick="removeBookItem(event)">X</button>
+    `;
+    bookItems.appendChild(entry);
 });
 
-function removeEntry(event) {
+function removeBookItem(event) {
     const entry = event.target.parentNode;
-    entriesContainer.removeChild(entry);
+    bookItems.removeChild(entry);
 }
