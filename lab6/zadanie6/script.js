@@ -63,6 +63,16 @@ repeatPassword.addEventListener("keydown", (e) => {
 	}
 });
 
+repeatPassword.addEventListener("focusout", function () {
+	passwordsMatch = password.value === repeatPassword.value;
+	if(passwordsMatch) {
+		passMatch.src = "./ok.png";
+	}
+	else {
+		passMatch.src = "./wrong.png";
+	}
+});
+
 showPassword.addEventListener("click", function () {
 	if(password.type === "password") {
 		password.type = "text";
