@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css"
+		integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+	<script src="script.js" defer></script>
+	<title>Document</title>
+</head>
+
+<body>
+	<div class="container row">
+		<div id="btn-1" class="col-8 container bg-secondary w-25 p-4">
+			<div id="btn-2" class="container bg-danger p-4">
+				<div id="btn-3" class="bg-warning">s</div>
+			</div>
+		</div>
+		<div class="col-4 flex flex-row justify-content-center align-content-center">
+			<p>Komunikat:</p> <span id="komunikat"></span>
+		</div>
+	</div>
+	<div class="container m-5">Suma:<p class=" m-2 d-inline" id="sum">0</p>
+	</div>
+	<div class="container mt-5">
+		<button type="button" class="btn btn-info" id="btn-propagation" onclick="togglePropagation()">Stop
+			propagation</button>
+		<button type="button" class="btn btn-info" id="btn-res">Reset</button>
+		<div class="d-flex flex-column w-25">
+			<div class="input-group mb-2">
+				<div class="input-group-prepend">
+					<div class="input-group-text">
+						<input value="order" type="radio" id="check-1" name="order" checked />
+					</div>
+				</div>
+				<label class="form-control" for="check-1">1-2-3</label>
+			</div>
+
+			<div class="input-group mb-2">
+				<div class="input-group-prepend">
+					<div class="input-group-text">
+						<input value="order" type="radio" id="check-2" name="order" />
+					</div>
+				</div>
+				<label class="form-control" for="check-2">3-2-1</label>
+			</div>
+
+			<div class="input-group">
+				<div class="input-group-prepend">
+					<div class="input-group-text">
+						<input value="order" type="radio" id="check-3" name="order" />
+					</div>
+				</div>
+				<label class="form-control" for="check-3">2-1-3</label>
+			</div>
+		</div>
+
+	</div>
+</body>
+
+</html>

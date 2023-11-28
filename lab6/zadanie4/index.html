@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css"
+		integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+	<script src="script.js" defer></script>
+	<title>Document</title>
+	<style>
+		#main-container {
+			width: 100vw;
+			height: 100vh;
+			background-color: #f0f0f0;
+			padding: 0;
+		}
+
+		#red-circle {
+			width: 100px;
+			height: 100px;
+			background-color: red;
+			border-radius: 50%;
+			transition: all 0.5s;
+			left: 0;
+			top: 0;
+		}
+
+		#textCom {
+			top: 50%;
+			left: 50%;
+			transform: translate(-50%, -50%);
+			font-size: 2rem;
+		}
+	</style>
+</head>
+
+<body>
+	<div id="main-container" class="position-relative container-fluid">
+		<div id="circle-container" class="position-absolute left container bg-warning w-50 h-50 ">
+			<div id="red-circle" class="position-absolute"></div>
+		</div>
+		<p id="textCom" class="position-absolute">Kliknij gdziekolwiek</p>
+	</div>
+</body>
+
+</html>
