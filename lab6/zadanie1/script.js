@@ -11,7 +11,7 @@ const sumElement = document.getElementById("sum")
 const logElement = document.getElementById("log")
 
 function adder(event, value, button) {
-    if (propagation) event.stopPropagation();
+    if (!propagation) event.stopPropagation();
     sum += value;
     sumElement.innerHTML = sum;
     let textNode = document.createTextNode(`* Kliknięto ${button} za ${value}`);

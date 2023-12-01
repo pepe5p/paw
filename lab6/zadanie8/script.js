@@ -104,6 +104,10 @@ function searchAndRender() {
 }
 
 function flipCheckbox(key) {
+    document.getElementById("name").value = "";
+    document.getElementById("capital").value = "";
+    document.getElementById("population").value = "";
+
     let checkboxVal = document.getElementById(key + "-sort").checked;
     document.getElementById(key + "-sort").checked = !checkboxVal;
     document.getElementById("sort-" + key + "-button").innerText = checkboxVal ? "Desc" : "Asc";
