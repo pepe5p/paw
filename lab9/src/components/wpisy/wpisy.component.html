@@ -1,0 +1,16 @@
+<div class="container">
+  <h1 class="mt-4 mb-3">Posts</h1>
+
+  <div id="post-input" class="mb-4">
+    <div class="input-group">
+      <input type="text" #postTitle class="form-control" placeholder="Enter post title">
+      <div class="input-group-append">
+        <button class="btn btn-primary" type="button" (click)="onAddPost(postTitle)">Add Post</button>
+      </div>
+    </div>
+  </div>
+
+  <ul class="list-group">
+    <li *ngFor="let post of posts" class="list-group-item">{{ post.title }}</li>
+  </ul>
+</div>

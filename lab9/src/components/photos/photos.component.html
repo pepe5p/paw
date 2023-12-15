@@ -1,0 +1,15 @@
+<div class="container-fluid">
+  <h1>Photos</h1>
+  <ul>
+    <li *ngFor="let photo of photos">
+      <img src="{{ photo.url }}" alt="{{ photo.title }}" class="img-thumbnail">
+      <p>
+        {{ photo.title }}
+        <a routerLink="/photos/{{ photo.id }}" routerLinkActive="active">
+          View
+        </a>
+      </p>
+    </li>
+  </ul>
+</div>
+
