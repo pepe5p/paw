@@ -1,0 +1,16 @@
+import {Timestamp} from "@angular/fire/firestore";
+
+export interface TripData {
+  name: string;
+  country: string;
+  startDate: Timestamp;
+  endDate: Timestamp;
+  pricePLN: number;
+  maxPeople: number;
+  description: string;
+  imageUrl: string;
+}
+
+export interface Trip extends TripData {
+  id: string;
+}

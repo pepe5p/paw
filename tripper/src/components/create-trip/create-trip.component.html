@@ -1,0 +1,61 @@
+<div class="trip-form-container my-4">
+  <h2>Dodawanie nowej wycieczki</h2>
+  <form [formGroup]="tripForm" (ngSubmit)="addTrip()" class="row">
+    <div class="mt-3 col-md-6">
+      <label for="name" class="form-label">Nazwa</label>
+      <input type="text" class="form-control" id="name" formControlName="name">
+      <div *ngIf="tripForm.get('name')?.invalid && tripForm.get('name')?.touched" class="text-danger">
+        Nazwa jest wymagana.
+      </div>
+    </div>
+
+    <div class="mt-3 col-md-6">
+      <label for="country" class="form-label">Kraj</label>
+      <input type="text" class="form-control" id="country" formControlName="country">
+      <div *ngIf="tripForm.get('country')?.invalid && tripForm.get('country')?.touched" class="text-danger">
+        Kraj jest wymagany.
+      </div>
+    </div>
+
+    <div class="mt-3 col-md-6">
+      <label for="startDate" class="form-label">Data rozpoczęcia</label>
+      <input type="datetime-local" class="form-control" id="startDate" formControlName="startDate">
+      <div *ngIf="tripForm.get('startDate')?.invalid && tripForm.get('startDate')?.touched" class="text-danger">
+        Data rozpoczęcia jest wymagana.
+      </div>
+    </div>
+
+    <div class="mt-3 col-md-6">
+      <label for="endDate" class="form-label">Data zakończenia</label>
+      <input type="datetime-local" class="form-control" id="endDate" formControlName="endDate">
+      <div *ngIf="tripForm.get('endDate')?.invalid && tripForm.get('endDate')?.touched" class="text-danger">
+        Data zakończenia jest wymagana.
+      </div>
+    </div>
+
+    <div class="mt-3 col-md-6">
+      <label for="price" class="form-label">Cena</label>
+      <input type="number" class="form-control" id="price" formControlName="price">
+      <div *ngIf="tripForm.get('price')?.invalid && tripForm.get('price')?.touched" class="text-danger">
+        Cena jest wymagana i musi być liczbą większą niż 0.
+      </div>
+    </div>
+
+    <div class="mt-3 col-md-6">
+      <label for="maxPeople" class="form-label">Liczba miejsc</label>
+      <input type="number" class="form-control" id="maxPeople" formControlName="maxPeople">
+      <div *ngIf="tripForm.get('maxPeople')?.invalid && tripForm.get('maxPeople')?.touched" class="text-danger">
+        Liczba miejsc jest wymagana i musi być liczbą większą niż 0.
+      </div>
+    </div>
+
+    <div class="mt-3 col-12">
+      <label for="description" class="form-label">Opis</label>
+      <textarea class="form-control" id="description" formControlName="description"></textarea>
+    </div>
+
+    <div class="mt-3 col-12">
+      <button type="submit" class="btn btn-primary">Dodaj wycieczkę</button>
+    </div>
+  </form>
+</div>
