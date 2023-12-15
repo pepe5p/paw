@@ -1,23 +1,23 @@
 import { Component, OnInit } from '@angular/core';
-import { DataService } from "../dataService/data.service";
+import { ApiClient } from "../api_client/api.client";
 import {ActivatedRoute, RouterLink, RouterLinkActive} from "@angular/router";
 
 @Component({
-  selector: 'app-single-photo',
-  templateUrl: './single-photo.component.html',
+  selector: 'app-photo',
+  templateUrl: './photo.component.html',
   standalone: true,
   imports: [
     RouterLink,
     RouterLinkActive
   ],
-  styleUrls: ['./single-photo.component.css']
+  styleUrls: ['./photo.component.css']
 })
-export class SinglePhotoComponent implements OnInit {
+export class PhotoComponent implements OnInit {
 
   photo: any = {};
   id: number = 0;
 
-  constructor(private dataService: DataService, private route: ActivatedRoute) {
+  constructor(private dataService: ApiClient, private route: ActivatedRoute) {
   }
 
   ngOnInit(): void {

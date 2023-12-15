@@ -1,0 +1,26 @@
+<div class="container">
+  <h1 class="mt-4 mb-3">Posts</h1>
+
+  <div id="post-input" class="mb-4 p-4" style="background-color: #f8f9fa; border-radius: 8px;">
+    <form>
+      <div class="mb-3">
+        <label for="postTitle" class="form-label">Post Title</label>
+        <input type="text" #postTitle class="form-control" id="postTitle" placeholder="Enter post title">
+      </div>
+
+      <div class="mb-3">
+        <label for="postBody" class="form-label">Post Body</label>
+        <input type="text" #postBody class="form-control" id="postBody" placeholder="Enter post body">
+      </div>
+
+      <button class="btn btn-primary" type="button" (click)="onAddPost(postTitle, postBody)">Add Post</button>
+    </form>
+  </div>
+
+  <ul class="list-group">
+    <li *ngFor="let post of posts.reverse()" class="list-group-item">
+      <h4>{{ post.title }}</h4>
+      <p>{{ post.body }}</p>
+    </li>
+  </ul>
+</div>

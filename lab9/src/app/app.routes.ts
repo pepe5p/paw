@@ -1,14 +1,16 @@
 import {RouterModule, Routes} from '@angular/router';
-import {PhotosComponent} from "../components/photos/photos.component";
+import {GalleryComponent} from "../components/gallery/gallery.component";
 import {HomeComponent} from "../components/home/home.component";
-import {WpisyComponent} from "../components/wpisy/wpisy.component";
-import {SinglePhotoComponent} from "../components/single-photo/single-photo.component";
+import {PostsComponent} from "../components/posts/posts.component";
+import {PhotoComponent} from "../components/photo/photo.component";
 import {NgModule} from "@angular/core";
 export const routes: Routes = [
-  {path: "", component: HomeComponent},
-  {path: "photos", component: PhotosComponent},
-  {path: "photos/:id", component: SinglePhotoComponent},
-  {path: "wpisy", component: WpisyComponent}
+  {path: "", redirectTo: "home", pathMatch: "full"},
+  {path: "home", component: HomeComponent},
+  {path: "gallery", component: GalleryComponent},
+  {path: "gallery/:id", component: PhotoComponent},
+  {path: "posts", component: PostsComponent},
+  {path: "**", redirectTo: "home"}
 ];
 
 @NgModule({

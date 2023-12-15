@@ -5,7 +5,7 @@ import { Observable } from 'rxjs';
 @Injectable({
   providedIn: 'root',
 })
-export class DataService {
+export class ApiClient {
   private baseUrl = 'https://jsonplaceholder.typicode.com';
 
   constructor(private http: HttpClient) {}
@@ -14,13 +14,14 @@ export class DataService {
     return this.http.get<any[]>(`${this.baseUrl}/posts`);
   }
 
-  getPhotos(): Observable<any[]> {
-    return this.http.get<any[]>(`${this.baseUrl}/photos`);
-  }
-
-  addPost(value: string) {
+  addPost(value: string, body: string): Observable<any> {
     return this.http.post<any>(`${this.baseUrl}/posts`, {
       title: value,
+      body: body,
     });
+  }
+
+  getPhotos(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.baseUrl}/photos`);
   }
 }

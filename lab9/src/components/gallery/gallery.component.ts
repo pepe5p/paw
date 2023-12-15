@@ -1,10 +1,10 @@
 import {Component, OnInit} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
 import {NgForOf, NgOptimizedImage} from "@angular/common";
-import {DataService} from "../dataService/data.service";
+import {ApiClient} from "../api_client/api.client";
 import {RouterLink, RouterLinkActive} from "@angular/router";
 @Component({
-  selector: 'app-photos',
+  selector: 'app-gallery',
   standalone: true,
   imports: [
     NgOptimizedImage,
@@ -12,14 +12,14 @@ import {RouterLink, RouterLinkActive} from "@angular/router";
     RouterLink,
     RouterLinkActive
   ],
-  templateUrl: './photos.component.html',
-  styleUrl: './photos.component.css',
+  templateUrl: './gallery.component.html',
+  styleUrl: './gallery.component.css',
   providers: [HttpClient],
 })
-export class PhotosComponent implements OnInit{
+export class GalleryComponent implements OnInit{
   photos: any[] = [];
 
-  constructor(private dataService: DataService) {}
+  constructor(private dataService: ApiClient) {}
 
   ngOnInit(): void {
     this.dataService.getPhotos().subscribe((data) => {
