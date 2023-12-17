@@ -1,0 +1,15 @@
+.low-availability {
+  background-color: #ffe8e5;
+}
+
+.low-availability-text {
+  color: red;
+}
+
+.cheapest {
+  border: 2px solid red;
+}
+
+.most-expensive {
+  border: 2px solid green;
+}

@@ -1,0 +1,36 @@
+<div class="container">
+  <h1 class="mt-4 mb-3">Wycieczki</h1>
+  <div class="row">
+    <div *ngFor="let trip of trips" class="col-sm-6 col-lg-4 col-xl-3 mb-4">
+      <div class="card p-3"
+           [ngClass]="{
+             'low-availability': isLowAvailability(trip),
+             'cheapest': isCheapestTrip(trip),
+             'most-expensive': isMostExpensiveTrip(trip)
+           }">
+        <div class="ratio ratio-1x1 rounded-circle overflow-hidden">
+          <img [src]="trip.imageUrl" alt="trip" class="card-img-top img-cover">
+        </div>
+        <div class="card-body">
+          <h3 class="card-title">{{ trip.name }}</h3>
+          <p class="card-text">{{ trip.description }}</p>
+          <p class="card-text"><strong>Kraj:</strong> {{ trip.country }}</p>
+          <p class="card-text"><strong>Cena:</strong> {{ trip.price }} zł</p>
+          <p class="card-text" [ngClass]="{'low-availability-text': isLowAvailability(trip)}">
+            <strong>Wolne miejsca:</strong> {{ emptySlots(trip) }} z {{ trip.maxPeople }}
+          </p>
+          <p class="card-text"><strong>Wyjazd:</strong> {{ trip.startDate }}</p>
+          <p class="card-text"><strong>Powrót:</strong> {{ trip.endDate }}</p>
+          <div class="btn-group mb-2">
+            <button *ngIf="!isAddButtonHidden(trip)" class="btn btn-outline-dark" (click)="reserveSlot(trip)">Zarezerwuj</button>
+            <button *ngIf="!isRemoveButtonHidden(trip)" class="btn btn-outline-dark" (click)="cancelReservation(trip)">Cofnij</button>
+          </div>
+          <div class="btn-group">
+            <button *ngIf="!isEditButtonHidden(trip)" class="btn btn-outline-dark" (click)="editTrip(trip)">Edytuj</button>
+            <button *ngIf="!isDeleteButtonHidden(trip)" class="btn btn-danger" (click)="deleteTrip(trip)">Usuń</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
