@@ -1,33 +1,120 @@
 <div class="container">
-  <h1 class="mt-4 mb-3">Wycieczki</h1>
   <div class="row">
-    <div *ngFor="let trip of trips" class="col-sm-6 col-lg-4 col-xl-3 mb-4">
-      <div class="card p-3"
-           [ngClass]="{
-             'low-availability': isLowAvailability(trip),
-             'cheapest': isCheapestTrip(trip),
-             'most-expensive': isMostExpensiveTrip(trip)
-           }">
-        <div class="ratio ratio-1x1 rounded-circle overflow-hidden">
-          <img [src]="trip.imageUrl" alt="trip" class="card-img-top img-cover">
-        </div>
-        <div class="card-body">
-          <h3 class="card-title">{{ trip.name }}</h3>
-          <p class="card-text">{{ trip.description }}</p>
-          <p class="card-text"><strong>Kraj:</strong> {{ trip.country }}</p>
-          <p class="card-text"><strong>Cena:</strong> {{ trip.price }} zł</p>
-          <p class="card-text" [ngClass]="{'low-availability-text': isLowAvailability(trip)}">
-            <strong>Wolne miejsca:</strong> {{ emptySlots(trip) }} z {{ trip.maxPeople }}
-          </p>
-          <p class="card-text"><strong>Wyjazd:</strong> {{ trip.startDate }}</p>
-          <p class="card-text"><strong>Powrót:</strong> {{ trip.endDate }}</p>
-          <div class="btn-group mb-2">
-            <button *ngIf="!isAddButtonHidden(trip)" class="btn btn-outline-dark" (click)="reserveSlot(trip)">Zarezerwuj</button>
-            <button *ngIf="!isRemoveButtonHidden(trip)" class="btn btn-outline-dark" (click)="cancelReservation(trip)">Cofnij</button>
+    <aside class="col-md-2 side-panel">
+      <h4>Waluta</h4>
+      <div *ngFor="let currency of currencies">
+        <button
+          class="btn btn-outline-secondary"
+          [class.active]="currency === selectedCurrency"
+          (click)="changeCurrency(currency)"
+        >
+          {{ currency }}
+        </button>
+      </div>
+    </aside>
+
+    <div class="col-md-10 pt-4">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h1 class="">Wycieczki</h1>
+        <button class="btn btn-primary" (click)="toggleAddForm()">Dodaj wycieczkę</button>
+      </div>
+
+      <div *ngIf="showAddForm" class="trip-form-container mb-4">
+        <h2>Dodawanie nowej wycieczki</h2>
+        <form [formGroup]="tripForm" (ngSubmit)="addTrip()" class="row">
+          <div class="mt-3 col-md-6">
+            <label for="name" class="form-label">Nazwa</label>
+            <input type="text" class="form-control" id="name" formControlName="name">
+            <div *ngIf="tripForm.get('name')?.invalid && tripForm.get('name')?.touched" class="text-danger">
+              Nazwa jest wymagana.
+            </div>
           </div>
-          <div class="btn-group">
-            <button *ngIf="!isEditButtonHidden(trip)" class="btn btn-outline-dark" (click)="editTrip(trip)">Edytuj</button>
-            <button *ngIf="!isDeleteButtonHidden(trip)" class="btn btn-danger" (click)="deleteTrip(trip)">Usuń</button>
+
+          <div class="mt-3 col-md-6">
+            <label for="country" class="form-label">Kraj</label>
+            <input type="text" class="form-control" id="country" formControlName="country">
+            <div *ngIf="tripForm.get('country')?.invalid && tripForm.get('country')?.touched" class="text-danger">
+              Kraj jest wymagany.
+            </div>
+          </div>
+
+          <div class="mt-3 col-md-6">
+            <label for="startDate" class="form-label">Data rozpoczęcia</label>
+            <input type="date" class="form-control" id="startDate" formControlName="startDate">
+            <div *ngIf="tripForm.get('startDate')?.invalid && tripForm.get('startDate')?.touched" class="text-danger">
+              Data rozpoczęcia jest wymagana.
+            </div>
+          </div>
+
+          <div class="mt-3 col-md-6">
+            <label for="endDate" class="form-label">Data zakończenia</label>
+            <input type="date" class="form-control" id="endDate" formControlName="endDate">
+            <div *ngIf="tripForm.get('endDate')?.invalid && tripForm.get('endDate')?.touched" class="text-danger">
+              Data zakończenia jest wymagana.
+            </div>
+          </div>
+
+          <div class="mt-3 col-md-6">
+            <label for="price" class="form-label">Cena</label>
+            <input type="number" class="form-control" id="price" formControlName="price">
+            <div *ngIf="tripForm.get('price')?.invalid && tripForm.get('price')?.touched" class="text-danger">
+              Cena jest wymagana i musi być liczbą większą niż 0.
+            </div>
+          </div>
+
+          <div class="mt-3 col-md-6">
+            <label for="maxPeople" class="form-label">Liczba miejsc</label>
+            <input type="number" class="form-control" id="maxPeople" formControlName="maxPeople">
+            <div *ngIf="tripForm.get('maxPeople')?.invalid && tripForm.get('maxPeople')?.touched" class="text-danger">
+              Liczba miejsc jest wymagana i musi być liczbą większą niż 0.
+            </div>
+          </div>
+
+          <div class="mt-3 col-12">
+            <label for="description" class="form-label">Opis</label>
+            <textarea class="form-control" id="description" formControlName="description"></textarea>
+          </div>
+
+          <div class="mt-3 col-12">
+            <button type="submit" class="btn btn-primary">Dodaj wycieczkę</button>
+          </div>
+        </form>
+      </div>
+
+
+      <div class="row">
+        <div *ngFor="let trip of trips" class="col-sm-6 col-lg-4 mb-4">
+          <div class="card p-3"
+               [ngClass]="{
+                 'low-availability': isLowAvailability(trip),
+                 'cheapest': isCheapestTrip(trip),
+                 'most-expensive': isMostExpensiveTrip(trip)
+               }">
+            <div class="ratio ratio-1x1 rounded-circle overflow-hidden">
+              <img [src]="trip.imageUrl" alt="trip" class="card-img-top img-cover">
+            </div>
+            <div class="card-body">
+              <h4 class="card-title">{{ trip.name | uppercase }}</h4>
+              <p class="card-text">{{ trip.description }}</p>
+              <div class="mb-3">
+                <app-star-rating [selectedStars]="trip.rating" (ratingChanged)="updateRating(trip, $event)"></app-star-rating>
+              </div>
+              <p class="card-text"><strong>Kraj:</strong> {{ trip.country | uppercase }}</p>
+              <p class="card-text"><strong>Cena:</strong> {{ trip.pricePLN | currencyConversion:selectedCurrency }}</p>
+              <p class="card-text" [ngClass]="{'low-availability-text': isLowAvailability(trip)}">
+                <strong>Wolne miejsca:</strong> {{ emptySlots(trip) }} z {{ trip.maxPeople }}
+              </p>
+              <p class="card-text"><strong>Wyjazd:</strong> {{ trip.startDate }}</p>
+              <p class="card-text"><strong>Powrót:</strong> {{ trip.endDate }}</p>
+              <div class="col-12 btn-group mb-2">
+                <button *ngIf="!isAddButtonHidden(trip)" class="btn btn-outline-dark" (click)="reserveSlot(trip)">Zarezerwuj</button>
+                <button *ngIf="!isRemoveButtonHidden(trip)" class="btn btn-outline-dark" (click)="cancelReservation(trip)">Cofnij</button>
+              </div>
+              <div class="col-12 btn-group">
+<!--                <button *ngIf="!isEditButtonHidden(trip)" class="btn btn-outline-dark" (click)="editTrip(trip)">Edytuj</button>-->
+                <button *ngIf="!isDeleteButtonHidden(trip)" class="btn btn-danger" (click)="deleteTrip(trip)">Usuń</button>
+              </div>
+            </div>
           </div>
         </div>
       </div>

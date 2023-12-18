@@ -13,11 +13,12 @@ export class TripService {
       country: 'Polska',
       startDate: '2020-01-01',
       endDate: '2020-01-02',
-      price: 100,
+      pricePLN: 100,
       currentPeople: 5,
       maxPeople: 10,
       description: 'Opis wycieczki 1',
       imageUrl: 'https://picsum.photos/200/300',
+      rating: 4.7,
     },
     {
       id: '2',
@@ -25,11 +26,12 @@ export class TripService {
       country: 'Polska',
       startDate: '2020-01-01',
       endDate: '2020-01-02',
-      price: 200,
+      pricePLN: 200,
       currentPeople: 10,
       maxPeople: 20,
       description: 'Opis wycieczki 2',
       imageUrl: 'https://picsum.photos/200/300',
+      rating: 4.7,
     },
     {
       id: '3',
@@ -37,11 +39,12 @@ export class TripService {
       country: 'Polska',
       startDate: '2020-01-01',
       endDate: '2020-01-02',
-      price: 300,
+      pricePLN: 300,
       currentPeople: 15,
       maxPeople: 30,
       description: 'Opis wycieczki 3',
       imageUrl: 'https://picsum.photos/200/300',
+      rating: 3.7,
     },
     {
       id: '4',
@@ -49,11 +52,12 @@ export class TripService {
       country: 'Polska',
       startDate: '2020-01-01',
       endDate: '2020-01-02',
-      price: 400,
+      pricePLN: 400,
       currentPeople: 20,
       maxPeople: 40,
       description: 'Opis wycieczki 4',
       imageUrl: 'https://picsum.photos/200/300',
+      rating: 4.7,
     },
     {
       id: '5',
@@ -61,12 +65,78 @@ export class TripService {
       country: 'Polska',
       startDate: '2020-01-01',
       endDate: '2020-01-02',
-      price: 150,
+      pricePLN: 150,
       currentPeople: 25,
       maxPeople: 50,
       description: 'Opis wycieczki 5',
       imageUrl: 'https://picsum.photos/200/300',
-    }
+      rating: 5.0,
+    },
+    {
+      id: '6',
+      name: 'Wycieczka 6',
+      country: 'Polska',
+      startDate: '2020-01-01',
+      endDate: '2020-01-02',
+      pricePLN: 250,
+      currentPeople: 30,
+      maxPeople: 60,
+      description: 'Opis wycieczki 6',
+      imageUrl: 'https://picsum.photos/200/300',
+      rating: 2.3,
+    },
+    {
+      id: '7',
+      name: 'Wycieczka 7',
+      country: 'Polska',
+      startDate: '2020-01-01',
+      endDate: '2020-01-02',
+      pricePLN: 350,
+      currentPeople: 35,
+      maxPeople: 70,
+      description: 'Opis wycieczki 7',
+      imageUrl: 'https://picsum.photos/200/300',
+      rating: 4.7,
+    },
+    {
+      id: '8',
+      name: 'Wycieczka 8',
+      country: 'Polska',
+      startDate: '2020-01-01',
+      endDate: '2020-01-02',
+      pricePLN: 450,
+      currentPeople: 40,
+      maxPeople: 80,
+      description: 'Opis wycieczki 8',
+      imageUrl: 'https://picsum.photos/200/300',
+      rating: 4.7,
+    },
+    {
+      id: '9',
+      name: 'Wycieczka 9',
+      country: 'Polska',
+      startDate: '2020-01-01',
+      endDate: '2020-01-02',
+      pricePLN: 550,
+      currentPeople: 45,
+      maxPeople: 90,
+      description: 'Opis wycieczki 9',
+      imageUrl: 'https://picsum.photos/200/300',
+      rating: 4.7,
+    },
+    {
+      id: '10',
+      name: 'Wycieczka 10',
+      country: 'Polska',
+      startDate: '2020-01-01',
+      endDate: '2020-01-02',
+      pricePLN: 650,
+      currentPeople: 50,
+      maxPeople: 100,
+      description: 'Opis wycieczki 10',
+      imageUrl: 'https://picsum.photos/200/300',
+      rating: 4.7,
+    },
   ];
 
   private cheapestTripSubject = new BehaviorSubject<Trip | undefined>(undefined);
@@ -132,12 +202,12 @@ export class TripService {
   }
 
   private updateCheapestTrip(): void {
-    const cheapestTrip = this.trips.reduce((min, trip) => (trip.price < min.price ? trip : min), this.trips[0]);
+    const cheapestTrip = this.trips.reduce((min, trip) => (trip.pricePLN < min.pricePLN ? trip : min), this.trips[0]);
     this.cheapestTripSubject.next(cheapestTrip);
   }
 
   private updateMostExpensiveTrip(): void {
-    const mostExpensiveTrip = this.trips.reduce((max, trip) => (trip.price > max.price ? trip : max), this.trips[0]);
+    const mostExpensiveTrip = this.trips.reduce((max, trip) => (trip.pricePLN > max.pricePLN ? trip : max), this.trips[0]);
     this.mostExpensiveTripSubject.next(mostExpensiveTrip);
   }
 }

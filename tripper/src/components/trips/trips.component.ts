@@ -2,7 +2,11 @@ import { Component, OnDestroy } from '@angular/core';
 import { Trip } from '../../models/trip.model';
 import { TripService } from "../../services/trip.service";
 import { Subscription } from 'rxjs';
-import {NgClass, NgForOf, NgIf, NgOptimizedImage} from "@angular/common";
+import {NgClass, NgForOf, NgIf, NgOptimizedImage, UpperCasePipe} from "@angular/common";
+import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from "@angular/forms";
+import {CurrencyConversionPipe} from "../../pipes/currency-conversion.pipe";
+import {StarRatingComponent} from "../star-rating/star-rating.component";
+
 
 @Component({
   selector: 'app-trips',
@@ -11,7 +15,11 @@ import {NgClass, NgForOf, NgIf, NgOptimizedImage} from "@angular/common";
     NgForOf,
     NgIf,
     NgOptimizedImage,
-    NgClass
+    NgClass,
+    ReactiveFormsModule,
+    UpperCasePipe,
+    CurrencyConversionPipe,
+    StarRatingComponent,
   ],
   templateUrl: './trips.component.html',
   styleUrls: ['./trips.component.css']
@@ -24,8 +32,24 @@ export class TripsComponent implements OnDestroy{
   mostExpensiveTrip?: Trip;
   private cheapestTripSubscription: Subscription | undefined;
   private mostExpensiveTripSubscription: Subscription | undefined;
+  tripForm: FormGroup;
+  showAddForm = false;
+  currencies = ['PLN', 'EUR', 'USD'];
+  selectedCurrency = this.currencies[0];
 
-  constructor(private tripService: TripService) {}
+  constructor(private tripService: TripService, private fb: FormBuilder) {
+    let todayDate = new Date().toISOString().split('T')[0];
+    this.tripForm = this.fb.group({
+      name: ['', [Validators.required]],
+      country: ['', [Validators.required]],
+      startDate: [todayDate, [Validators.required]],
+      endDate: [todayDate, [Validators.required]],
+      price: ['', [Validators.required, Validators.min(0)]],
+      maxPeople: ['', [Validators.required, Validators.min(1)]],
+      description: [''],
+      imageUrl: ['']
+    });
+  }
 
   ngOnInit(): void {
     this.getTrips();
@@ -107,5 +131,44 @@ export class TripsComponent implements OnDestroy{
 
   isMostExpensiveTrip(trip: Trip): boolean {
     return trip === this.mostExpensiveTrip;
+  }
+
+  addTrip(): void {
+    if (this.tripForm.valid) {
+      const newTrip: Trip = {
+        id: (this.trips.length + 1).toString(),
+        name: this.tripForm.value.name,
+        country: this.tripForm.value.country,
+        startDate: this.tripForm.value.startDate,
+        endDate: this.tripForm.value.endDate,
+        pricePLN: this.tripForm.value.price,
+        currentPeople: 0,
+        maxPeople: this.tripForm.value.maxPeople,
+        description: this.tripForm.value.description,
+        imageUrl: "https://picsum.photos/200/300",
+        rating: 0,
+      };
+
+      this.tripService.addTrip(newTrip).subscribe(() => {
+        this.getTrips();
+        this.resetForm();
+      });
+    }
+  }
+
+  private resetForm(): void {
+    this.tripForm.reset();
+  }
+
+  toggleAddForm() {
+    this.showAddForm = !this.showAddForm;
+  }
+
+  changeCurrency(currency: string) {
+    this.selectedCurrency = currency;
+  }
+
+  updateRating(trip: Trip, stars: number): void {
+    trip.rating = stars;
   }
 }

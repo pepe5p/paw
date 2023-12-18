@@ -4,9 +4,10 @@ export interface Trip {
   country: string;
   startDate: string;
   endDate: string;
-  price: number;
+  pricePLN: number;
   currentPeople: number;
   maxPeople: number;
   description: string;
   imageUrl: string;
+  rating: number;
 }
