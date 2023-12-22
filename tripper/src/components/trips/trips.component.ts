@@ -1,11 +1,13 @@
 import { Component, OnDestroy } from '@angular/core';
-import { Trip } from '../../models/trip.model';
+import {Trip, TripWithId} from '../../models/trip.model';
 import { TripService } from "../../services/trip.service";
 import { Subscription } from 'rxjs';
 import {NgClass, NgForOf, NgIf, NgOptimizedImage, UpperCasePipe} from "@angular/common";
-import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from "@angular/forms";
 import {CurrencyConversionPipe} from "../../pipes/currency-conversion.pipe";
 import {StarRatingComponent} from "../star-rating/star-rating.component";
+import {TripsFiltersComponent} from "../trips-filters/trips-filters.component";
+import {CurrencyService} from "../../services/currency.service";
+import {SearchPipe} from "../../pipes/search.pipe";
 
 
 @Component({
@@ -16,10 +18,11 @@ import {StarRatingComponent} from "../star-rating/star-rating.component";
     NgIf,
     NgOptimizedImage,
     NgClass,
-    ReactiveFormsModule,
     UpperCasePipe,
     CurrencyConversionPipe,
     StarRatingComponent,
+    TripsFiltersComponent,
+    SearchPipe,
   ],
   templateUrl: './trips.component.html',
   styleUrls: ['./trips.component.css']
@@ -27,42 +30,39 @@ import {StarRatingComponent} from "../star-rating/star-rating.component";
 export class TripsComponent implements OnDestroy{
   LOW_AVAILABILITY_THRESHOLD = 3;
 
-  trips: Trip[] = [];
-  cheapestTrip?: Trip;
-  mostExpensiveTrip?: Trip;
+  trips: TripWithId[] = [];
+  cheapestTripID?: number;
+  mostExpensiveTripID?: number;
   private cheapestTripSubscription: Subscription | undefined;
   private mostExpensiveTripSubscription: Subscription | undefined;
-  tripForm: FormGroup;
-  showAddForm = false;
-  currencies = ['PLN', 'EUR', 'USD'];
-  selectedCurrency = this.currencies[0];
+  selectedCurrency = 'PLN';
+  search: string = '';
 
-  constructor(private tripService: TripService, private fb: FormBuilder) {
-    let todayDate = new Date().toISOString().split('T')[0];
-    this.tripForm = this.fb.group({
-      name: ['', [Validators.required]],
-      country: ['', [Validators.required]],
-      startDate: [todayDate, [Validators.required]],
-      endDate: [todayDate, [Validators.required]],
-      price: ['', [Validators.required, Validators.min(0)]],
-      maxPeople: ['', [Validators.required, Validators.min(1)]],
-      description: [''],
-      imageUrl: ['']
-    });
-  }
+  constructor(
+    private tripService: TripService,
+    private currencyService: CurrencyService,
+  ) {}
 
   ngOnInit(): void {
     this.getTrips();
     this.subscribeToCheapestAndMostExpensiveTrips();
+    this.subscribeToCurrencyChanges();
   }
 
   ngOnDestroy(): void {
     this.unsubscribeFromCheapestAndMostExpensiveTrips();
   }
 
-  getTrips(): void {
+  getTrips(): TripWithId[] {
     this.tripService.getTrips().subscribe((trips) => {
       this.trips = trips;
+    });
+    return this.trips;
+  }
+
+  private subscribeToCurrencyChanges(): void {
+    this.currencyService.selectedCurrency$.subscribe((currency) => {
+      this.selectedCurrency = currency;
     });
   }
 
@@ -74,21 +74,21 @@ export class TripsComponent implements OnDestroy{
     return trip.maxPeople - trip.currentPeople;
   }
 
-  reserveSlot(trip: Trip): void {
+  reserveSlot(trip: TripWithId): void {
     this.tripService.reservePlace(trip.id).subscribe();
   }
 
-  cancelReservation(trip: Trip): void {
+  cancelReservation(trip: TripWithId): void {
     this.tripService.cancelReservation(trip.id).subscribe();
   }
 
   private subscribeToCheapestAndMostExpensiveTrips(): void {
     this.cheapestTripSubscription = this.tripService.cheapestTrip$.subscribe((cheapestTrip) => {
-      this.cheapestTrip = cheapestTrip;
+      this.cheapestTripID = cheapestTrip?.id;
     });
 
     this.mostExpensiveTripSubscription = this.tripService.mostExpensiveTrip$.subscribe((mostExpensiveTrip) => {
-      this.mostExpensiveTrip = mostExpensiveTrip;
+      this.mostExpensiveTripID = mostExpensiveTrip?.id;
     });
   }
 
@@ -117,55 +117,20 @@ export class TripsComponent implements OnDestroy{
     return false;
   }
 
-  editTrip(trip: Trip) {
+  editTrip(trip: TripWithId) {
     this.tripService.editTrip(trip);
   }
 
-  deleteTrip(trip: Trip) {
+  deleteTrip(trip: TripWithId) {
     this.tripService.deleteTrip(trip);
   }
 
-  isCheapestTrip(trip: Trip): boolean {
-    return trip === this.cheapestTrip;
+  isCheapestTrip(trip: TripWithId): boolean {
+    return trip.id === this.cheapestTripID;
   }
 
-  isMostExpensiveTrip(trip: Trip): boolean {
-    return trip === this.mostExpensiveTrip;
-  }
-
-  addTrip(): void {
-    if (this.tripForm.valid) {
-      const newTrip: Trip = {
-        id: (this.trips.length + 1).toString(),
-        name: this.tripForm.value.name,
-        country: this.tripForm.value.country,
-        startDate: this.tripForm.value.startDate,
-        endDate: this.tripForm.value.endDate,
-        pricePLN: this.tripForm.value.price,
-        currentPeople: 0,
-        maxPeople: this.tripForm.value.maxPeople,
-        description: this.tripForm.value.description,
-        imageUrl: "https://picsum.photos/200/300",
-        rating: 0,
-      };
-
-      this.tripService.addTrip(newTrip).subscribe(() => {
-        this.getTrips();
-        this.resetForm();
-      });
-    }
-  }
-
-  private resetForm(): void {
-    this.tripForm.reset();
-  }
-
-  toggleAddForm() {
-    this.showAddForm = !this.showAddForm;
-  }
-
-  changeCurrency(currency: string) {
-    this.selectedCurrency = currency;
+  isMostExpensiveTrip(trip: TripWithId): boolean {
+    return trip.id === this.mostExpensiveTripID;
   }
 
   updateRating(trip: Trip, stars: number): void {

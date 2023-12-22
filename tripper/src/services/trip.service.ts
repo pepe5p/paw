@@ -1,14 +1,14 @@
 import { Injectable } from '@angular/core';
 import {BehaviorSubject, Observable, of} from 'rxjs';
-import { Trip } from '../models/trip.model';
+import {Trip, TripWithId} from '../models/trip.model';
 
 @Injectable({
   providedIn: 'root',
 })
 export class TripService {
-  private trips: Trip[] = [
+  private trips: TripWithId[] = [
     {
-      id: '1',
+      id: 1,
       name: 'Wycieczka 1',
       country: 'Polska',
       startDate: '2020-01-01',
@@ -21,7 +21,7 @@ export class TripService {
       rating: 4.7,
     },
     {
-      id: '2',
+      id: 2,
       name: 'Wycieczka 2',
       country: 'Polska',
       startDate: '2020-01-01',
@@ -34,7 +34,7 @@ export class TripService {
       rating: 4.7,
     },
     {
-      id: '3',
+      id: 3,
       name: 'Wycieczka 3',
       country: 'Polska',
       startDate: '2020-01-01',
@@ -47,7 +47,7 @@ export class TripService {
       rating: 3.7,
     },
     {
-      id: '4',
+      id: 4,
       name: 'Wycieczka 4',
       country: 'Polska',
       startDate: '2020-01-01',
@@ -60,7 +60,7 @@ export class TripService {
       rating: 4.7,
     },
     {
-      id: '5',
+      id: 5,
       name: 'Wycieczka 5',
       country: 'Polska',
       startDate: '2020-01-01',
@@ -73,7 +73,7 @@ export class TripService {
       rating: 5.0,
     },
     {
-      id: '6',
+      id: 6,
       name: 'Wycieczka 6',
       country: 'Polska',
       startDate: '2020-01-01',
@@ -86,7 +86,7 @@ export class TripService {
       rating: 2.3,
     },
     {
-      id: '7',
+      id: 7,
       name: 'Wycieczka 7',
       country: 'Polska',
       startDate: '2020-01-01',
@@ -99,7 +99,7 @@ export class TripService {
       rating: 4.7,
     },
     {
-      id: '8',
+      id: 8,
       name: 'Wycieczka 8',
       country: 'Polska',
       startDate: '2020-01-01',
@@ -112,7 +112,7 @@ export class TripService {
       rating: 4.7,
     },
     {
-      id: '9',
+      id: 9,
       name: 'Wycieczka 9',
       country: 'Polska',
       startDate: '2020-01-01',
@@ -125,7 +125,7 @@ export class TripService {
       rating: 4.7,
     },
     {
-      id: '10',
+      id: 10,
       name: 'Wycieczka 10',
       country: 'Polska',
       startDate: '2020-01-01',
@@ -139,31 +139,36 @@ export class TripService {
     },
   ];
 
-  private cheapestTripSubject = new BehaviorSubject<Trip | undefined>(undefined);
+  private cheapestTripSubject = new BehaviorSubject<TripWithId | undefined>(undefined);
   cheapestTrip$ = this.cheapestTripSubject.asObservable();
 
-  private mostExpensiveTripSubject = new BehaviorSubject<Trip | undefined>(undefined);
+  private mostExpensiveTripSubject = new BehaviorSubject<TripWithId | undefined>(undefined);
   mostExpensiveTrip$ = this.mostExpensiveTripSubject.asObservable();
 
-  getTrips(): Observable<Trip[]> {
+  getTrips(): Observable<TripWithId[]> {
     this.updateCheapestTrip();
     this.updateMostExpensiveTrip();
     return of(this.trips);
   }
 
-  getTripById(id: string): Observable<Trip | undefined> {
+  getTripById(id: number): Observable<TripWithId | undefined> {
     const trip = this.trips.find((t) => t.id === id);
     return of(trip);
   }
 
   addTrip(trip: Trip): Observable<boolean> {
-    this.trips.push(trip);
+    let maxID = Math.max.apply(Math, this.trips.map(function(o) { return o.id; }))
+    let tripWithID = {
+      ...trip,
+      id: maxID + 1,
+    }
+    this.trips.push(tripWithID);
     this.updateCheapestTrip();
     this.updateMostExpensiveTrip();
     return of(true);
   }
 
-  editTrip(trip: Trip): Observable<boolean> {
+  editTrip(trip: TripWithId): Observable<boolean> {
     const index = this.trips.findIndex((t) => t.id === trip.id);
     this.trips[index] = trip;
     this.updateCheapestTrip();
@@ -171,7 +176,7 @@ export class TripService {
     return of(true);
   }
 
-  deleteTrip(trip: Trip): Observable<boolean> {
+  deleteTrip(trip: TripWithId): Observable<boolean> {
     const index = this.trips.findIndex((t) => t.id === trip.id);
     this.trips.splice(index, 1);
     this.updateCheapestTrip();
@@ -179,7 +184,7 @@ export class TripService {
     return of(true);
   }
 
-  reservePlace(id: string): Observable<boolean> {
+  reservePlace(id: number): Observable<boolean> {
     const trip = this.trips.find((t) => t.id === id);
 
     if (trip && trip.currentPeople < trip.maxPeople) {
@@ -190,7 +195,7 @@ export class TripService {
     return of(false); // Reservation failed
   }
 
-  cancelReservation(id: string): Observable<boolean> {
+  cancelReservation(id: number): Observable<boolean> {
     const trip = this.trips.find((t) => t.id === id);
 
     if (trip && trip.currentPeople > 0) {
@@ -202,12 +207,18 @@ export class TripService {
   }
 
   private updateCheapestTrip(): void {
-    const cheapestTrip = this.trips.reduce((min, trip) => (trip.pricePLN < min.pricePLN ? trip : min), this.trips[0]);
+    const cheapestTrip = this.trips.reduce(
+      (min, trip) => (trip.pricePLN < min.pricePLN ? trip : min),
+      this.trips[0],
+    );
     this.cheapestTripSubject.next(cheapestTrip);
   }
 
   private updateMostExpensiveTrip(): void {
-    const mostExpensiveTrip = this.trips.reduce((max, trip) => (trip.pricePLN > max.pricePLN ? trip : max), this.trips[0]);
+    const mostExpensiveTrip = this.trips.reduce(
+      (max, trip) => (trip.pricePLN > max.pricePLN ? trip : max),
+      this.trips[0],
+    );
     this.mostExpensiveTripSubject.next(mostExpensiveTrip);
   }
 }

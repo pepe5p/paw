@@ -1,0 +1,18 @@
+.side-panel {
+  background-color: #f8f9fa; /* Light background color */
+  padding: 15px;
+}
+
+.side-panel h4 {
+  font-size: 18px;
+  margin-bottom: 15px;
+}
+
+.side-panel button {
+  margin-bottom: 5px;
+}
+
+.side-panel button.active {
+  background-color: #007bff; /* Active button background color */
+  color: #fff; /* Active button text color */
+}

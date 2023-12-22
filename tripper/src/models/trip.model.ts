@@ -1,5 +1,4 @@
 export interface Trip {
-  id: string;
   name: string;
   country: string;
   startDate: string;
@@ -10,4 +9,8 @@ export interface Trip {
   description: string;
   imageUrl: string;
   rating: number;
+}
+
+export interface TripWithId extends Trip {
+  id: number;
 }
