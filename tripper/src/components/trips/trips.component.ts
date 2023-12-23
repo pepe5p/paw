@@ -1,4 +1,4 @@
-import { Component, OnDestroy } from '@angular/core';
+import {Component, inject, OnDestroy} from '@angular/core';
 import {Trip, TripWithId} from '../../models/trip.model';
 import { TripService } from "../../services/trip.service";
 import { Subscription } from 'rxjs';
@@ -12,8 +12,7 @@ import {SearchPipe} from "../../pipes/search.pipe";
 
 @Component({
   selector: 'app-trips',
-  standalone: true,
-  imports: [
+  providers: [
     NgForOf,
     NgIf,
     NgOptimizedImage,
@@ -30,6 +29,8 @@ import {SearchPipe} from "../../pipes/search.pipe";
 export class TripsComponent implements OnDestroy{
   LOW_AVAILABILITY_THRESHOLD = 3;
 
+  tripService: TripService = inject(TripService);
+  currencyService: CurrencyService = inject(CurrencyService);
   trips: TripWithId[] = [];
   cheapestTripID?: number;
   mostExpensiveTripID?: number;
@@ -38,10 +39,7 @@ export class TripsComponent implements OnDestroy{
   selectedCurrency = 'PLN';
   search: string = '';
 
-  constructor(
-    private tripService: TripService,
-    private currencyService: CurrencyService,
-  ) {}
+  constructor() {}
 
   ngOnInit(): void {
     this.getTrips();

@@ -10,7 +10,3 @@ export interface Trip {
   imageUrl: string;
   rating: number;
 }
-
-export interface TripWithId extends Trip {
-  id: number;
-}

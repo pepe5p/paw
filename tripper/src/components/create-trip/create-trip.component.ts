@@ -7,8 +7,7 @@ import {NgIf} from "@angular/common";
 
 @Component({
   selector: 'app-create-trip',
-  standalone: true,
-  imports: [
+  providers: [
     ReactiveFormsModule,
     NgIf
   ],

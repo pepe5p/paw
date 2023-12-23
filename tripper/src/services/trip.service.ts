@@ -1,143 +1,15 @@
 import { Injectable } from '@angular/core';
-import {BehaviorSubject, Observable, of} from 'rxjs';
-import {Trip, TripWithId} from '../models/trip.model';
+import {BehaviorSubject, Observable} from 'rxjs';
+import { AngularFirestore, AngularFirestoreCollection } from '@angular/fire/compat/firestore';
+import { Trip } from '../models/trip.model';
+import { map } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root',
 })
 export class TripService {
-  private trips: TripWithId[] = [
-    {
-      id: 1,
-      name: 'Wycieczka 1',
-      country: 'Polska',
-      startDate: '2020-01-01',
-      endDate: '2020-01-02',
-      pricePLN: 100,
-      currentPeople: 5,
-      maxPeople: 10,
-      description: 'Opis wycieczki 1',
-      imageUrl: 'https://picsum.photos/200/300',
-      rating: 4.7,
-    },
-    {
-      id: 2,
-      name: 'Wycieczka 2',
-      country: 'Polska',
-      startDate: '2020-01-01',
-      endDate: '2020-01-02',
-      pricePLN: 200,
-      currentPeople: 10,
-      maxPeople: 20,
-      description: 'Opis wycieczki 2',
-      imageUrl: 'https://picsum.photos/200/300',
-      rating: 4.7,
-    },
-    {
-      id: 3,
-      name: 'Wycieczka 3',
-      country: 'Polska',
-      startDate: '2020-01-01',
-      endDate: '2020-01-02',
-      pricePLN: 300,
-      currentPeople: 15,
-      maxPeople: 30,
-      description: 'Opis wycieczki 3',
-      imageUrl: 'https://picsum.photos/200/300',
-      rating: 3.7,
-    },
-    {
-      id: 4,
-      name: 'Wycieczka 4',
-      country: 'Polska',
-      startDate: '2020-01-01',
-      endDate: '2020-01-02',
-      pricePLN: 400,
-      currentPeople: 20,
-      maxPeople: 40,
-      description: 'Opis wycieczki 4',
-      imageUrl: 'https://picsum.photos/200/300',
-      rating: 4.7,
-    },
-    {
-      id: 5,
-      name: 'Wycieczka 5',
-      country: 'Polska',
-      startDate: '2020-01-01',
-      endDate: '2020-01-02',
-      pricePLN: 150,
-      currentPeople: 25,
-      maxPeople: 50,
-      description: 'Opis wycieczki 5',
-      imageUrl: 'https://picsum.photos/200/300',
-      rating: 5.0,
-    },
-    {
-      id: 6,
-      name: 'Wycieczka 6',
-      country: 'Polska',
-      startDate: '2020-01-01',
-      endDate: '2020-01-02',
-      pricePLN: 250,
-      currentPeople: 30,
-      maxPeople: 60,
-      description: 'Opis wycieczki 6',
-      imageUrl: 'https://picsum.photos/200/300',
-      rating: 2.3,
-    },
-    {
-      id: 7,
-      name: 'Wycieczka 7',
-      country: 'Polska',
-      startDate: '2020-01-01',
-      endDate: '2020-01-02',
-      pricePLN: 350,
-      currentPeople: 35,
-      maxPeople: 70,
-      description: 'Opis wycieczki 7',
-      imageUrl: 'https://picsum.photos/200/300',
-      rating: 4.7,
-    },
-    {
-      id: 8,
-      name: 'Wycieczka 8',
-      country: 'Polska',
-      startDate: '2020-01-01',
-      endDate: '2020-01-02',
-      pricePLN: 450,
-      currentPeople: 40,
-      maxPeople: 80,
-      description: 'Opis wycieczki 8',
-      imageUrl: 'https://picsum.photos/200/300',
-      rating: 4.7,
-    },
-    {
-      id: 9,
-      name: 'Wycieczka 9',
-      country: 'Polska',
-      startDate: '2020-01-01',
-      endDate: '2020-01-02',
-      pricePLN: 550,
-      currentPeople: 45,
-      maxPeople: 90,
-      description: 'Opis wycieczki 9',
-      imageUrl: 'https://picsum.photos/200/300',
-      rating: 4.7,
-    },
-    {
-      id: 10,
-      name: 'Wycieczka 10',
-      country: 'Polska',
-      startDate: '2020-01-01',
-      endDate: '2020-01-02',
-      pricePLN: 650,
-      currentPeople: 50,
-      maxPeople: 100,
-      description: 'Opis wycieczki 10',
-      imageUrl: 'https://picsum.photos/200/300',
-      rating: 4.7,
-    },
-  ];
+  private tripsCollection: AngularFirestoreCollection<Trip>;
+  trips$: Observable<Trip[]>;
 
   private cheapestTripSubject = new BehaviorSubject<TripWithId | undefined>(undefined);
   cheapestTrip$ = this.cheapestTripSubject.asObservable();
@@ -145,80 +17,124 @@ export class TripService {
   private mostExpensiveTripSubject = new BehaviorSubject<TripWithId | undefined>(undefined);
   mostExpensiveTrip$ = this.mostExpensiveTripSubject.asObservable();
 
+  constructor(private firestore: AngularFirestore) {
+    this.tripsCollection = this.firestore.collection<Trip>('trips');
+    this.trips$ = this.tripsCollection.snapshotChanges().pipe(
+      map(actions => {
+        return actions.map(a => {
+          const data = a.payload.doc.data() as Trip;
+          const id = a.payload.doc.id;
+          return { id, ...data };
+        });
+      })
+    );
+  }
+
   getTrips(): Observable<TripWithId[]> {
     this.updateCheapestTrip();
     this.updateMostExpensiveTrip();
-    return of(this.trips);
+    return this.trips$;
   }
 
   getTripById(id: number): Observable<TripWithId | undefined> {
-    const trip = this.trips.find((t) => t.id === id);
-    return of(trip);
+    return this.trips$.pipe(
+      map(trips => trips.find(trip => trip.id === id))
+    );
   }
 
   addTrip(trip: Trip): Observable<boolean> {
-    let maxID = Math.max.apply(Math, this.trips.map(function(o) { return o.id; }))
-    let tripWithID = {
-      ...trip,
-      id: maxID + 1,
-    }
-    this.trips.push(tripWithID);
-    this.updateCheapestTrip();
-    this.updateMostExpensiveTrip();
-    return of(true);
+    return new Observable<boolean>(observer => {
+      this.tripsCollection.add(trip).then(() => {
+        this.updateCheapestTrip();
+        this.updateMostExpensiveTrip();
+        observer.next(true);
+        observer.complete();
+      }).catch(error => {
+        console.error('Error adding trip: ', error);
+        observer.next(false);
+        observer.complete();
+      });
+    });
   }
 
   editTrip(trip: TripWithId): Observable<boolean> {
-    const index = this.trips.findIndex((t) => t.id === trip.id);
-    this.trips[index] = trip;
-    this.updateCheapestTrip();
-    this.updateMostExpensiveTrip();
-    return of(true);
+    return new Observable<boolean>(observer => {
+      this.tripsCollection.doc(trip.id).update(trip).then(() => {
+        this.updateCheapestTrip();
+        this.updateMostExpensiveTrip();
+        observer.next(true);
+        observer.complete();
+      }).catch(error => {
+        console.error('Error updating trip: ', error);
+        observer.next(false);
+        observer.complete();
+      });
+    });
   }
 
   deleteTrip(trip: TripWithId): Observable<boolean> {
-    const index = this.trips.findIndex((t) => t.id === trip.id);
-    this.trips.splice(index, 1);
-    this.updateCheapestTrip();
-    this.updateMostExpensiveTrip();
-    return of(true);
+    return new Observable<boolean>(observer => {
+      this.tripsCollection.doc(trip.id).delete().then(() => {
+        this.updateCheapestTrip();
+        this.updateMostExpensiveTrip();
+        observer.next(true);
+        observer.complete();
+      }).catch(error => {
+        console.error('Error deleting trip: ', error);
+        observer.next(false);
+        observer.complete();
+      });
+    });
   }
 
-  reservePlace(id: number): Observable<boolean> {
-    const trip = this.trips.find((t) => t.id === id);
-
-    if (trip && trip.currentPeople < trip.maxPeople) {
-      trip.currentPeople++;
-      return of(true); // Reservation successful
-    }
-
-    return of(false); // Reservation failed
+  reservePlace(id: string): Observable<boolean> {
+    return this.updatePeopleCount(id, 1);
   }
 
-  cancelReservation(id: number): Observable<boolean> {
-    const trip = this.trips.find((t) => t.id === id);
+  cancelReservation(id: string): Observable<boolean> {
+    return this.updatePeopleCount(id, -1);
+  }
 
-    if (trip && trip.currentPeople > 0) {
-      trip.currentPeople--;
-      return of(true); // Cancellation successful
-    }
+  private updatePeopleCount(id: string, change: number): Observable<boolean> {
+    return new Observable<boolean>(observer => {
+      const tripRef = this.tripsCollection.doc(id);
 
-    return of(false); // Cancellation failed
+      this.firestore.firestore.runTransaction(async transaction => {
+        let doc = await transaction.get(tripRef);
+        if (!doc.exists) {
+          throw 'Document does not exist!';
+        }
+        const currentPeople = doc.data()?.currentPeople || 0;
+        const newPeopleCount = currentPeople + change;
+        if (newPeopleCount >= 0) {
+          transaction.update(tripRef, {currentPeople: newPeopleCount});
+          observer.next(true);
+        } else {
+          observer.next(false);
+        }
+        observer.complete();
+      }).catch(error => {
+        console.error('Error updating people count: ', error);
+        observer.next(false);
+        observer.complete();
+      });
+    });
   }
 
   private updateCheapestTrip(): void {
-    const cheapestTrip = this.trips.reduce(
-      (min, trip) => (trip.pricePLN < min.pricePLN ? trip : min),
-      this.trips[0],
-    );
-    this.cheapestTripSubject.next(cheapestTrip);
+    this.trips$.pipe(
+      map(trips => trips.reduce((min, trip) => (trip.pricePLN < min.pricePLN ? trip : min), trips[0]))
+    ).subscribe(cheapestTrip => {
+      this.cheapestTripSubject.next(cheapestTrip);
+    });
   }
 
+
   private updateMostExpensiveTrip(): void {
-    const mostExpensiveTrip = this.trips.reduce(
-      (max, trip) => (trip.pricePLN > max.pricePLN ? trip : max),
-      this.trips[0],
-    );
-    this.mostExpensiveTripSubject.next(mostExpensiveTrip);
+    this.trips$.pipe(
+      map(trips => trips.reduce((max, trip) => (trip.pricePLN > max.pricePLN ? trip : max), trips[0]))
+    ).subscribe(mostExpensiveTrip => {
+      this.mostExpensiveTripSubject.next(mostExpensiveTrip);
+    });
   }
 }

@@ -2,7 +2,6 @@ import { Pipe, PipeTransform } from '@angular/core';
 import {TripWithId} from "../models/trip.model";
 
 @Pipe({
-  standalone: true,
   name: 'searchPipe',
 })
 export class SearchPipe implements PipeTransform {

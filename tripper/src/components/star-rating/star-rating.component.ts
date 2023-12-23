@@ -6,11 +6,6 @@ import {NgClass, NgForOf} from "@angular/common";
   selector: 'app-star-rating',
   templateUrl: './star-rating.component.html',
   styleUrls: ['./star-rating.component.css'],
-  imports: [
-    NgForOf,
-    NgClass
-  ],
-  standalone: true
 })
 export class StarRatingComponent {
   @Input() selectedStars: number = 0;
