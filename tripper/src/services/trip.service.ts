@@ -1,28 +1,28 @@
 import { Injectable } from '@angular/core';
-import {BehaviorSubject, Observable} from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { AngularFirestore, AngularFirestoreCollection } from '@angular/fire/compat/firestore';
-import { Trip } from '../models/trip.model';
+import { Trip, TripData } from '../models/trip.model';
 import { map } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root',
 })
 export class TripService {
-  private tripsCollection: AngularFirestoreCollection<Trip>;
+  private tripsCollection: AngularFirestoreCollection<TripData>;
   trips$: Observable<Trip[]>;
 
-  private cheapestTripSubject = new BehaviorSubject<TripWithId | undefined>(undefined);
+  private cheapestTripSubject = new BehaviorSubject<Trip | undefined>(undefined);
   cheapestTrip$ = this.cheapestTripSubject.asObservable();
 
-  private mostExpensiveTripSubject = new BehaviorSubject<TripWithId | undefined>(undefined);
+  private mostExpensiveTripSubject = new BehaviorSubject<Trip | undefined>(undefined);
   mostExpensiveTrip$ = this.mostExpensiveTripSubject.asObservable();
 
   constructor(private firestore: AngularFirestore) {
-    this.tripsCollection = this.firestore.collection<Trip>('trips');
+    this.tripsCollection = this.firestore.collection<TripData>('trips');
     this.trips$ = this.tripsCollection.snapshotChanges().pipe(
       map(actions => {
         return actions.map(a => {
-          const data = a.payload.doc.data() as Trip;
+          const data = a.payload.doc.data() as TripData;
           const id = a.payload.doc.id;
           return { id, ...data };
         });
@@ -30,19 +30,19 @@ export class TripService {
     );
   }
 
-  getTrips(): Observable<TripWithId[]> {
+  getTrips(): Observable<Trip[]> {
     this.updateCheapestTrip();
     this.updateMostExpensiveTrip();
     return this.trips$;
   }
 
-  getTripById(id: number): Observable<TripWithId | undefined> {
+  getTripById(id: string): Observable<Trip | undefined> {
     return this.trips$.pipe(
       map(trips => trips.find(trip => trip.id === id))
     );
   }
 
-  addTrip(trip: Trip): Observable<boolean> {
+  addTrip(trip: TripData): Observable<boolean> {
     return new Observable<boolean>(observer => {
       this.tripsCollection.add(trip).then(() => {
         this.updateCheapestTrip();
@@ -57,7 +57,7 @@ export class TripService {
     });
   }
 
-  editTrip(trip: TripWithId): Observable<boolean> {
+  editTrip(trip: Trip): Observable<boolean> {
     return new Observable<boolean>(observer => {
       this.tripsCollection.doc(trip.id).update(trip).then(() => {
         this.updateCheapestTrip();
@@ -72,7 +72,7 @@ export class TripService {
     });
   }
 
-  deleteTrip(trip: TripWithId): Observable<boolean> {
+  deleteTrip(trip: Trip): Observable<boolean> {
     return new Observable<boolean>(observer => {
       this.tripsCollection.doc(trip.id).delete().then(() => {
         this.updateCheapestTrip();
@@ -97,14 +97,15 @@ export class TripService {
 
   private updatePeopleCount(id: string, change: number): Observable<boolean> {
     return new Observable<boolean>(observer => {
-      const tripRef = this.tripsCollection.doc(id);
+      const tripRef = this.tripsCollection.doc(id).ref;
 
       this.firestore.firestore.runTransaction(async transaction => {
         let doc = await transaction.get(tripRef);
         if (!doc.exists) {
           throw 'Document does not exist!';
         }
-        const currentPeople = doc.data()?.currentPeople || 0;
+        // const currentPeople = doc.data()?.currentPeople || 0;
+        const currentPeople = 0;
         const newPeopleCount = currentPeople + change;
         if (newPeopleCount >= 0) {
           transaction.update(tripRef, {currentPeople: newPeopleCount});

@@ -1,6 +1,5 @@
 // star-rating.component.ts
 import { Component, Input, Output, EventEmitter } from '@angular/core';
-import {NgClass, NgForOf} from "@angular/common";
 
 @Component({
   selector: 'app-star-rating',

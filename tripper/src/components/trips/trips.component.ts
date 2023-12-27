@@ -1,28 +1,12 @@
 import {Component, inject, OnDestroy} from '@angular/core';
-import {Trip, TripWithId} from '../../models/trip.model';
+import {TripData, Trip} from '../../models/trip.model';
 import { TripService } from "../../services/trip.service";
 import { Subscription } from 'rxjs';
-import {NgClass, NgForOf, NgIf, NgOptimizedImage, UpperCasePipe} from "@angular/common";
-import {CurrencyConversionPipe} from "../../pipes/currency-conversion.pipe";
-import {StarRatingComponent} from "../star-rating/star-rating.component";
-import {TripsFiltersComponent} from "../trips-filters/trips-filters.component";
 import {CurrencyService} from "../../services/currency.service";
-import {SearchPipe} from "../../pipes/search.pipe";
 
 
 @Component({
   selector: 'app-trips',
-  providers: [
-    NgForOf,
-    NgIf,
-    NgOptimizedImage,
-    NgClass,
-    UpperCasePipe,
-    CurrencyConversionPipe,
-    StarRatingComponent,
-    TripsFiltersComponent,
-    SearchPipe,
-  ],
   templateUrl: './trips.component.html',
   styleUrls: ['./trips.component.css']
 })
@@ -31,9 +15,9 @@ export class TripsComponent implements OnDestroy{
 
   tripService: TripService = inject(TripService);
   currencyService: CurrencyService = inject(CurrencyService);
-  trips: TripWithId[] = [];
-  cheapestTripID?: number;
-  mostExpensiveTripID?: number;
+  trips: Trip[] = [];
+  cheapestTripID?: string;
+  mostExpensiveTripID?: string;
   private cheapestTripSubscription: Subscription | undefined;
   private mostExpensiveTripSubscription: Subscription | undefined;
   selectedCurrency = 'PLN';
@@ -51,7 +35,7 @@ export class TripsComponent implements OnDestroy{
     this.unsubscribeFromCheapestAndMostExpensiveTrips();
   }
 
-  getTrips(): TripWithId[] {
+  getTrips(): Trip[] {
     this.tripService.getTrips().subscribe((trips) => {
       this.trips = trips;
     });
@@ -64,19 +48,19 @@ export class TripsComponent implements OnDestroy{
     });
   }
 
-  isLowAvailability(trip: Trip): boolean {
+  isLowAvailability(trip: TripData): boolean {
     return trip.currentPeople >= trip.maxPeople - this.LOW_AVAILABILITY_THRESHOLD;
   }
 
-  emptySlots(trip: Trip): number {
+  emptySlots(trip: TripData): number {
     return trip.maxPeople - trip.currentPeople;
   }
 
-  reserveSlot(trip: TripWithId): void {
+  reserveSlot(trip: Trip): void {
     this.tripService.reservePlace(trip.id).subscribe();
   }
 
-  cancelReservation(trip: TripWithId): void {
+  cancelReservation(trip: Trip): void {
     this.tripService.cancelReservation(trip.id).subscribe();
   }
 
@@ -99,39 +83,39 @@ export class TripsComponent implements OnDestroy{
     }
   }
 
-  isAddButtonHidden(trip: Trip): boolean {
+  isAddButtonHidden(trip: TripData): boolean {
     return trip.currentPeople >= trip.maxPeople;
   }
 
-  isRemoveButtonHidden(trip: Trip) {
+  isRemoveButtonHidden(trip: TripData) {
     return trip.currentPeople <= 0;
   }
 
-  isEditButtonHidden(_trip: Trip) {
+  isEditButtonHidden(_trip: TripData) {
     return false;
   }
 
-  isDeleteButtonHidden(_trip: Trip) {
+  isDeleteButtonHidden(_trip: TripData) {
     return false;
   }
 
-  editTrip(trip: TripWithId) {
+  editTrip(trip: Trip) {
     this.tripService.editTrip(trip);
   }
 
-  deleteTrip(trip: TripWithId) {
+  deleteTrip(trip: Trip) {
     this.tripService.deleteTrip(trip);
   }
 
-  isCheapestTrip(trip: TripWithId): boolean {
+  isCheapestTrip(trip: Trip): boolean {
     return trip.id === this.cheapestTripID;
   }
 
-  isMostExpensiveTrip(trip: TripWithId): boolean {
+  isMostExpensiveTrip(trip: Trip): boolean {
     return trip.id === this.mostExpensiveTripID;
   }
 
-  updateRating(trip: Trip, stars: number): void {
+  updateRating(trip: TripData, stars: number): void {
     trip.rating = stars;
   }
 }
