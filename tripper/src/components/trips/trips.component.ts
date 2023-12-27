@@ -1,7 +1,6 @@
-import { Component, OnDestroy } from '@angular/core';
+import {Component, inject} from '@angular/core';
 import {TripData, Trip} from '../../models/trip.model';
 import { TripService } from "../../services/trip.service";
-import { Subscription } from 'rxjs';
 import {NgClass, NgForOf, NgIf, NgOptimizedImage, UpperCasePipe} from "@angular/common";
 import {CurrencyConversionPipe} from "../../pipes/currency-conversion.pipe";
 import {StarRatingComponent} from "../star-rating/star-rating.component";
@@ -9,6 +8,7 @@ import {TripsFiltersComponent} from "../trips-filters/trips-filters.component";
 import {CurrencyService} from "../../services/currency.service";
 import {SearchPipe} from "../../pipes/search.pipe";
 import {FormatTimestampPipe} from "../../pipes/format-timestamp.pipe";
+import {FormsModule} from "@angular/forms";
 
 
 @Component({
@@ -25,42 +25,51 @@ import {FormatTimestampPipe} from "../../pipes/format-timestamp.pipe";
     TripsFiltersComponent,
     SearchPipe,
     FormatTimestampPipe,
+    FormsModule,
   ],
   templateUrl: './trips.component.html',
   styleUrls: ['./trips.component.css']
 })
-export class TripsComponent implements OnDestroy{
+export class TripsComponent {
   LOW_AVAILABILITY_THRESHOLD = 3;
 
+  currentPage = 1;
+  pageSize = 4;
+  totalPages = 0;
+
   trips: Trip[] = [];
-  cheapestTripID?: string;
-  mostExpensiveTripID?: string;
-  private cheapestTripSubscription?: Subscription;
-  private mostExpensiveTripSubscription?: Subscription;
+  allTrips: Trip[] = [];
+
+  cheapestPricePLN: number = 0;
+  highestPricePLN: number = 0;
+
   selectedCurrency = 'PLN';
+
   search: string = '';
 
-  constructor(
-    private tripService: TripService,
-    private currencyService: CurrencyService,
-  ) {}
+  tripService: TripService = inject(TripService)
+  currencyService: CurrencyService = inject(CurrencyService)
 
   ngOnInit(): void {
-    this.getTrips();
-    this.subscribeToCheapestAndMostExpensiveTrips();
+    this.fetchTrips();
     this.subscribeToCurrencyChanges();
   }
 
-  ngOnDestroy(): void {
-    this.unsubscribeFromCheapestAndMostExpensiveTrips();
+  fetchTrips(): void {
+    this.tripService.getTrips().subscribe((trips) => {
+      this.allTrips = trips
+      this.renderTrips();
+    });
   }
 
-  getTrips(): Trip[] {
-    this.tripService.getTrips().subscribe((trips) => {
-      this.trips = trips;
-    });
-    return this.trips;
+  renderTrips() {
+    this.totalPages = Math.ceil(this.allTrips.length / this.pageSize);
+    this.trips = this.allTrips.slice((this.currentPage - 1) * this.pageSize, this.currentPage * this.pageSize);
+    const sortedTrips = this.trips.sort((a, b) => a.pricePLN - b.pricePLN);
+    this.cheapestPricePLN = sortedTrips[0].pricePLN;
+    this.highestPricePLN = sortedTrips[sortedTrips.length - 1].pricePLN;
   }
+
 
   private subscribeToCurrencyChanges(): void {
     this.currencyService.selectedCurrency$.subscribe((currency) => {
@@ -84,25 +93,6 @@ export class TripsComponent implements OnDestroy{
     this.tripService.cancelReservation(trip.id).subscribe();
   }
 
-  private subscribeToCheapestAndMostExpensiveTrips(): void {
-    this.cheapestTripSubscription = this.tripService.cheapestTrip$.subscribe((cheapestTrip) => {
-      this.cheapestTripID = cheapestTrip?.id;
-    });
-
-    this.mostExpensiveTripSubscription = this.tripService.mostExpensiveTrip$.subscribe((mostExpensiveTrip) => {
-      this.mostExpensiveTripID = mostExpensiveTrip?.id;
-    });
-  }
-
-  private unsubscribeFromCheapestAndMostExpensiveTrips(): void {
-    if (this.cheapestTripSubscription) {
-      this.cheapestTripSubscription.unsubscribe();
-    }
-    if (this.mostExpensiveTripSubscription) {
-      this.mostExpensiveTripSubscription.unsubscribe();
-    }
-  }
-
   isAddButtonHidden(trip: TripData): boolean {
     return 0 >= trip.maxPeople;
   }
@@ -120,14 +110,33 @@ export class TripsComponent implements OnDestroy{
   }
 
   isCheapestTrip(trip: Trip): boolean {
-    return trip.id == this.cheapestTripID;
+    return trip.pricePLN == this.cheapestPricePLN;
   }
 
   isMostExpensiveTrip(trip: Trip): boolean {
-    return trip.id == this.mostExpensiveTripID;
+    return trip.pricePLN == this.highestPricePLN;
   }
 
   updateRating(trip: TripData, stars: number): void {
     return;
+  }
+
+  nextPage(): void {
+    this.currentPage++;
+    this.renderTrips();
+  }
+
+  prevPage(): void {
+    if (this.currentPage > 1) {
+      this.currentPage--;
+      this.renderTrips();
+    }
+  }
+
+  changePageSize(): void {
+    const selectElement = document.getElementById('pageSizeSelect') as HTMLSelectElement;
+    this.pageSize = +selectElement.value;
+    this.currentPage = 1;
+    this.renderTrips();
   }
 }

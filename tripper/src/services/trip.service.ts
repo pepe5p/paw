@@ -1,15 +1,14 @@
 import {inject, Injectable} from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { Trip, TripData } from '../models/trip.model';
-import { map } from 'rxjs/operators';
 import {
   collection,
   collectionData,
   deleteDoc,
   doc,
-  Firestore,
+  Firestore, limit, orderBy, query,
   runTransaction,
-  setDoc,
+  setDoc, startAt,
 } from "@angular/fire/firestore";
 
 @Injectable({
@@ -31,17 +30,17 @@ export class TripService {
     this.trips$ = collectionData(this.tripsCollection, {idField: 'id'});
   }
 
-  getTrips(): Observable<Trip[]> {
-    this.updateCheapestTrip();
-    this.updateMostExpensiveTrip();
-    return this.trips$;
+  getTrips(): Observable<any[]> {
+    const q = query(
+      this.tripsCollection,
+      orderBy("startDate"),
+    );
+    return collectionData(q, {idField: 'id'});
   }
 
   addTrip(trip: TripData): Observable<boolean> {
     return new Observable<boolean>(observer => {
       setDoc(doc(this.tripsCollection), trip).then(() => {
-        this.updateCheapestTrip();
-        this.updateMostExpensiveTrip();
         observer.next(true);
         observer.complete();
       }).catch(error => {
@@ -54,10 +53,7 @@ export class TripService {
 
   deleteTrip(trip: Trip): void {
     const tripDoc = doc(this.tripsCollection, trip.id)
-    deleteDoc(tripDoc).then(() => {
-      this.updateCheapestTrip();
-      this.updateMostExpensiveTrip();
-    }).catch((error: any) => {
+    deleteDoc(tripDoc).then(() => {}).catch((error: any) => {
       console.error('Error deleting trip: ', error);
     });
   }
@@ -94,23 +90,6 @@ export class TripService {
         observer.next(false);
         observer.complete();
       });
-    });
-  }
-
-  private updateCheapestTrip(): void {
-    this.trips$.pipe(
-      map(trips => trips.reduce((min, trip) => (trip.pricePLN < min.pricePLN ? trip : min), trips[0]))
-    ).subscribe(cheapestTrip => {
-      this.cheapestTripSubject.next(cheapestTrip);
-    });
-  }
-
-
-  private updateMostExpensiveTrip(): void {
-    this.trips$.pipe(
-      map(trips => trips.reduce((max, trip) => (trip.pricePLN > max.pricePLN ? trip : max), trips[0]))
-    ).subscribe(mostExpensiveTrip => {
-      this.mostExpensiveTripSubject.next(mostExpensiveTrip);
     });
   }
 }
