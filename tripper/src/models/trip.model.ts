@@ -14,3 +14,11 @@ export interface TripData {
 export interface Trip extends TripData {
   id: string;
 }
+
+export interface TripWithRating extends Trip {
+  rating: number;
+}
+
+export interface TripWithReservation extends Trip {
+  reservation_count: number;
+}

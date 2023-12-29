@@ -1,1 +1,53 @@
-<p>basket works!</p>
+<div class="container my-4">
+  <h2>Twój Koszyk</h2>
+
+  <div *ngIf="reservations.length === 0" class="alert alert-dark">
+    Twój koszyk jest pusty.
+  </div>
+
+  <div *ngIf="reservations.length > 0" class="mt-3">
+    <div class="row border-bottom fw-bold mb-2">
+      <div class="col">Produkt</div>
+      <div class="col">Cena</div>
+      <div class="col">Ilość</div>
+      <div class="col">Akcje</div>
+      <div class="col">Zaznacz</div>
+    </div>
+
+    <div *ngFor="let reservation of reservations" class="row align-items-center mb-2">
+      <div class="col">{{ reservation.name }}</div>
+      <div class="col">{{ reservation.pricePLN | currencyConversion:selectedCurrency }}</div>
+      <div class="col">
+        <div class="input-group">
+          <button class="btn btn-outline-secondary" type="button" (click)="decrementQuantity(reservation)">-</button>
+          <span class="input-group-text">{{ reservation.quantity }}</span>
+          <button class="btn btn-outline-secondary" type="button" (click)="incrementQuantity(reservation)">+</button>
+        </div>
+      </div>
+      <div class="col">
+        <button class="btn btn-danger btn-sm" (click)="removeReservation(reservation)">
+          Usuń
+        </button>
+      </div>
+      <div class="col">
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox"[(ngModel)]="reservation.selected" (click)="toggleReservation(reservation)">
+        </div>
+      </div>
+    </div>
+
+    <div class="row mt-2">
+      <div class="col fw-bold">Podsumowanie:</div>
+      <div class="col fw-bold">
+        {{ totalPrice | currencyConversion:selectedCurrency }}
+      </div>
+      <div class="col"></div>
+      <div class="col"></div>
+      <div class="col"></div>
+    </div>
+  </div>
+
+  <form *ngIf="reservations.length !== 0" [formGroup]="checkoutForm" (ngSubmit)="onSubmit()" class="mt-2">
+    <button type="submit" class="btn btn-primary">Kup</button>
+  </form>
+</div>

@@ -1,5 +1,5 @@
 import {Component, inject} from '@angular/core';
-import {TripData, Trip} from '../../models/trip.model';
+import {TripData, Trip, TripWithReservation} from '../../models/trip.model';
 import { TripService } from "../../services/trip.service";
 import {NgClass, NgForOf, NgIf, NgOptimizedImage, UpperCasePipe} from "@angular/common";
 import {CurrencyConversionPipe} from "../../pipes/currency-conversion.pipe";
@@ -9,6 +9,7 @@ import {CurrencyService} from "../../services/currency.service";
 import {SearchPipe} from "../../pipes/search.pipe";
 import {FormatTimestampPipe} from "../../pipes/format-timestamp.pipe";
 import {FormsModule} from "@angular/forms";
+import {ReservationService} from "../../services/reservation.service";
 
 
 @Component({
@@ -37,8 +38,8 @@ export class TripsComponent {
   pageSize = 4;
   totalPages = 0;
 
-  trips: Trip[] = [];
-  allTrips: Trip[] = [];
+  trips: TripWithReservation[] = [];
+  allTrips: TripWithReservation[] = [];
 
   cheapestPricePLN: number = 0;
   highestPricePLN: number = 0;
@@ -49,6 +50,11 @@ export class TripsComponent {
 
   tripService: TripService = inject(TripService)
   currencyService: CurrencyService = inject(CurrencyService)
+  reservationService: ReservationService = inject(ReservationService);
+
+  // TODO: Wyświetl również sumaryczną ilość aktualnie zarezerwowanych wycieczek - jeśli wynosi on
+  // więcej niż 10 ma być wyświetlana na zielonym tle, jeśli poniżej 10 na czerwonym tle.
+  // (1pkt)
 
   ngOnInit(): void {
     this.fetchTrips();
@@ -65,7 +71,8 @@ export class TripsComponent {
   renderTrips() {
     this.totalPages = Math.ceil(this.allTrips.length / this.pageSize);
     this.trips = this.allTrips.slice((this.currentPage - 1) * this.pageSize, this.currentPage * this.pageSize);
-    const sortedTrips = this.trips.sort((a, b) => a.pricePLN - b.pricePLN);
+    const sortedTrips = [...this.allTrips]
+    sortedTrips.sort((a, b) => a.pricePLN - b.pricePLN);
     this.cheapestPricePLN = sortedTrips[0].pricePLN;
     this.highestPricePLN = sortedTrips[sortedTrips.length - 1].pricePLN;
   }
@@ -86,11 +93,13 @@ export class TripsComponent {
   }
 
   reserveSlot(trip: Trip): void {
-    this.tripService.reservePlace(trip.id).subscribe();
+    // this.tripService.reservePlace(trip.id).subscribe();
+    this.reservationService.addReservation({tripID: trip.id, quantity: 1});
   }
 
   cancelReservation(trip: Trip): void {
-    this.tripService.cancelReservation(trip.id).subscribe();
+    // this.tripService.cancelReservation(trip.id).subscribe();
+    this.reservationService.addReservation({tripID: trip.id, quantity: 1});
   }
 
   isAddButtonHidden(trip: TripData): boolean {

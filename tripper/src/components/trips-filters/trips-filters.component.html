@@ -3,11 +3,7 @@
   <div class="flex justify-content-between">
     <button
       class="btn btn-outline-secondary"
-      [class.active]="currency === selectedCurrency"
-      (click)="changeCurrency(currency)"
-      *ngFor="let currency of currencies"
     >
-      {{ currency }}
     </button>
   </div>
 </div>

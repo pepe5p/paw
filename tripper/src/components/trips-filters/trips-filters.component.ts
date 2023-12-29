@@ -13,22 +13,4 @@ import {CurrencyService} from "../../services/currency.service";
   styleUrl: './trips-filters.component.css'
 })
 export class TripsFiltersComponent {
-  currencies = this.currencyService.currencies;
-  selectedCurrency = 'PLN'
-
-  constructor(private currencyService: CurrencyService) {}
-
-  ngOnInit(): void {
-    this.subscribeToCurrencyChanges();
-  }
-
-  private subscribeToCurrencyChanges(): void {
-    this.currencyService.selectedCurrency$.subscribe((currency) => {
-      this.selectedCurrency = currency;
-    });
-  }
-
-  changeCurrency(currency: string) {
-    this.currencyService.changeCurrency(currency);
-  }
 }

@@ -6,28 +6,24 @@ import {
   collectionData,
   deleteDoc,
   doc,
-  Firestore, limit, orderBy, query,
+  Firestore,
+  orderBy,
+  query,
   runTransaction,
-  setDoc, startAt,
+  setDoc,
 } from "@angular/fire/firestore";
 
 @Injectable({
   providedIn: 'root',
 })
 export class TripService {
+  reservationsCollection;
   tripsCollection;
-  trips$: Observable<any[]>;
   firestore: Firestore = inject(Firestore);
 
-  private cheapestTripSubject = new BehaviorSubject<Trip | undefined>(undefined);
-  cheapestTrip$ = this.cheapestTripSubject.asObservable();
-
-  private mostExpensiveTripSubject = new BehaviorSubject<Trip | undefined>(undefined);
-  mostExpensiveTrip$ = this.mostExpensiveTripSubject.asObservable();
-
   constructor() {
+    this.reservationsCollection = collection(this.firestore, 'reservations');
     this.tripsCollection = collection(this.firestore, 'trips');
-    this.trips$ = collectionData(this.tripsCollection, {idField: 'id'});
   }
 
   getTrips(): Observable<any[]> {
@@ -55,41 +51,6 @@ export class TripService {
     const tripDoc = doc(this.tripsCollection, trip.id)
     deleteDoc(tripDoc).then(() => {}).catch((error: any) => {
       console.error('Error deleting trip: ', error);
-    });
-  }
-
-  reservePlace(id: string): Observable<boolean> {
-    return this.updatePeopleCount(id, 1);
-  }
-
-  cancelReservation(id: string): Observable<boolean> {
-    return this.updatePeopleCount(id, -1);
-  }
-
-  private updatePeopleCount(id: string, change: number): Observable<boolean> {
-    return new Observable<boolean>(observer => {
-      const tripRef = doc(this.firestore, 'trips', id);
-
-      runTransaction(this.firestore, async transaction => {
-        let doc = await transaction.get(tripRef);
-        if (!doc.exists) {
-          throw 'Document does not exist!';
-        }
-        // const currentPeople = doc.data()?.currentPeople || 0;
-        const currentPeople = 0;
-        const newPeopleCount = currentPeople + change;
-        if (newPeopleCount >= 0) {
-          transaction.update(tripRef, {currentPeople: newPeopleCount});
-          observer.next(true);
-        } else {
-          observer.next(false);
-        }
-        observer.complete();
-      }).catch(error => {
-        console.error('Error updating people count: ', error);
-        observer.next(false);
-        observer.complete();
-      });
     });
   }
 }
