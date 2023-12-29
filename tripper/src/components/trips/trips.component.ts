@@ -35,7 +35,7 @@ export class TripsComponent {
   LOW_AVAILABILITY_THRESHOLD = 3;
 
   currentPage = 1;
-  pageSize = 4;
+  pageSize = 12;
   totalPages = 0;
 
   trips: TripWithReservation[] = [];

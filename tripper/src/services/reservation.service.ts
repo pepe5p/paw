@@ -1,6 +1,7 @@
 import {inject, Injectable} from '@angular/core';
 import {Reservation} from "../models/reservation.model";
 import {collection, doc, Firestore, setDoc} from "@angular/fire/firestore";
+import {BehaviorSubject} from "rxjs";
 
 @Injectable({
   providedIn: 'root'
@@ -10,10 +11,18 @@ export class ReservationService {
   tripsCollection;
   reservations: Reservation[] = [];
   firestore: Firestore = inject(Firestore);
+  private reservedTripsCount = new BehaviorSubject<number>(0);
+  reservedTripsCount$ = this.reservedTripsCount.asObservable();
 
   constructor() {
     this.reservationsCollection = collection(this.firestore, 'reservations');
     this.tripsCollection = collection(this.firestore, 'trips');
+    this.updateReservedTripsCount();
+  }
+
+  updateReservedTripsCount(): void {
+    const count = this.reservations.reduce((acc, r) => acc + r.quantity, 0);
+    this.reservedTripsCount.next(count);
   }
 
   getReservations(): Reservation[] {
@@ -27,10 +36,12 @@ export class ReservationService {
 
     if (alreadySavedReservation) {
       alreadySavedReservation.quantity += reservation.quantity;
+      this.updateReservedTripsCount();
       return
     }
 
     this.reservations.push(reservation);
+    this.updateReservedTripsCount();
   }
 
   removeReservation(reservation: Reservation): void {
@@ -47,6 +58,7 @@ export class ReservationService {
     if (alreadySavedReservation.quantity <= 0) {
       this.reservations = this.reservations.filter((r) => r.tripID !== reservation.tripID);
     }
+    this.updateReservedTripsCount();
   }
 
   purchase(tripIDs: string[]): void {
@@ -63,5 +75,6 @@ export class ReservationService {
       })
       this.reservations = this.reservations.filter((r) => r.tripID !== reservation.tripID);
     }
+    this.updateReservedTripsCount();
   }
 }

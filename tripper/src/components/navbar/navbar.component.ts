@@ -2,16 +2,18 @@ import { Component } from '@angular/core';
 import {RouterLink, RouterLinkActive, RouterOutlet} from "@angular/router";
 import {NgForOf} from "@angular/common";
 import {CurrencyService} from "../../services/currency.service";
+import {TripCounterComponent} from "../trip-counter/trip-counter.component";
 
 @Component({
   selector: 'app-navbar',
   standalone: true,
-    imports: [
-        RouterLink,
-        RouterOutlet,
-        RouterLinkActive,
-        NgForOf
-    ],
+  imports: [
+    RouterLink,
+    RouterOutlet,
+    RouterLinkActive,
+    NgForOf,
+    TripCounterComponent
+  ],
   templateUrl: './navbar.component.html',
   styleUrl: './navbar.component.css'
 })
