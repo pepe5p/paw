@@ -1,7 +1,7 @@
 import {inject, Injectable} from '@angular/core';
 import {Reservation} from "../models/reservation.model";
-import {collection, doc, Firestore, setDoc} from "@angular/fire/firestore";
-import {BehaviorSubject} from "rxjs";
+import {collection, collectionData, doc, Firestore, getDocs, setDoc} from "@angular/fire/firestore";
+import {BehaviorSubject, Observable} from "rxjs";
 
 @Injectable({
   providedIn: 'root'
@@ -27,6 +27,10 @@ export class ReservationService {
 
   getReservations(): Reservation[] {
     return this.reservations;
+  }
+
+  getHistoryReservations(): Observable<any[]> {
+    return collectionData(this.reservationsCollection);
   }
 
   addReservation(reservation: Reservation): void {

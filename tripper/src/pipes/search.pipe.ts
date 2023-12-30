@@ -1,5 +1,5 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import {Trip, TripWithCumulatedReservations, TripWithReservation} from "../models/trip.model";
+import {TripWithCumulatedReservations} from "../models/trip.model";
 
 @Pipe({
   standalone: true,

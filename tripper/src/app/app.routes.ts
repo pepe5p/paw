@@ -6,12 +6,14 @@ import {CreateTripComponent} from "../components/create-trip/create-trip.compone
 import {BasketComponent} from "../components/basket/basket.component";
 import {AngularFireModule} from "@angular/fire/compat";
 import {environment} from '../environments/environment';
+import {HistoryComponent} from "../components/history/history.component";
 
 export const routes: Routes = [
   {path: "", component: HomeComponent},
   {path: "trips", component: TripsComponent},
   {path: "create-trip", component: CreateTripComponent},
   {path: "basket", component: BasketComponent},
+  {path: "history", component: HistoryComponent},
   {path: "**", redirectTo: "trips"}
 ];
 
