@@ -1,12 +1,22 @@
 <div class="container my-4">
   <h2>Twoja historia zakupów</h2>
 
-  <div *ngIf="reservations.length === 0" class="alert alert-dark">
+  <div class="mb-3">
+    <label for="statusFilter" class="form-label">Filtruj po statusie:</label>
+    <select class="form-select" id="statusFilter" [(ngModel)]="selectedStatus" (change)="filterReservations()">
+      <option value="all">Wszystkie</option>
+      <option value=0>Oczekiwanie na rozpoczęcie</option>
+      <option value=1>W trakcie</option>
+      <option value=2>Zakończona</option>
+    </select>
+  </div>
+
+  <div *ngIf="filteredReservations.length === 0" class="alert alert-dark">
     Nie masz jeszcze żadnej historii. Kup coś!
   </div>
 
-  <div *ngIf="reservations.length > 0" class="mt-3">
-    <div class="row border-bottom fw-bold mb-2">
+  <div *ngIf="filteredReservations.length > 0" class="mt-3">
+    <div class="row border-bottom fw-bold mb-2 gy-3">
       <div class="col">Nazwa wycieczki</div>
       <div class="col">Kraj</div>
       <div class="col">Kiedy kupione</div>
@@ -17,7 +27,7 @@
       <div class="col">Status</div>
     </div>
 
-    <div *ngFor="let reservation of reservations" class="row align-items-center mb-2">
+    <div *ngFor="let reservation of filteredReservations" class="row border-bottom align-items-center mb-2 gy-3">
       <div class="col">{{ reservation.trip.name }}</div>
       <div class="col">{{ reservation.trip.country }}</div>
       <div class="col">{{ reservation.when | formatTimestamp }}</div>

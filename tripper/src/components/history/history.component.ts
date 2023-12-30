@@ -8,6 +8,7 @@ import {CurrencyConversionPipe} from "../../pipes/currency-conversion.pipe";
 import {NgForOf, NgIf} from "@angular/common";
 import {FormatTimestampPipe} from "../../pipes/format-timestamp.pipe";
 import {Timestamp} from "@angular/fire/firestore";
+import {FormsModule} from "@angular/forms";
 
 @Component({
   selector: 'app-history',
@@ -19,6 +20,7 @@ import {Timestamp} from "@angular/fire/firestore";
     NgForOf,
     NgIf,
     FormatTimestampPipe,
+    FormsModule,
   ]
 })
 export class HistoryComponent implements OnInit {
@@ -28,7 +30,10 @@ export class HistoryComponent implements OnInit {
 
   trips: Trip[] = [];
   reservations: ReservationWithTrip[] = [];
+  filteredReservations: ReservationWithTrip[] = [];
   selectedCurrency = 'PLN';
+
+  selectedStatus: string = 'all';
 
   ngOnInit(): void {
     this.subscribeToChanges();
@@ -55,8 +60,16 @@ export class HistoryComponent implements OnInit {
         this.reservations.sort((a, b) => {
           return b.when.toMillis() - a.when.toMillis();
         });
+        this.filterReservations();
       });
     });
+  }
+
+  filterReservations() {
+    this.filteredReservations = this.reservations;
+    if (this.selectedStatus !== 'all') {
+      this.filteredReservations = this.filteredReservations.filter(reservation => this.getStatus(reservation) === +this.selectedStatus);
+    }
   }
 
   getStatus(reservation: ReservationWithTrip): number {

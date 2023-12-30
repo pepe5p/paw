@@ -1,6 +1,6 @@
 import {inject, Injectable} from '@angular/core';
 import {Reservation} from "../models/reservation.model";
-import {collection, collectionData, doc, Firestore, getDocs, setDoc, Timestamp} from "@angular/fire/firestore";
+import {collection, collectionData, doc, Firestore, setDoc, Timestamp} from "@angular/fire/firestore";
 import {BehaviorSubject, Observable} from "rxjs";
 
 @Injectable({
@@ -73,6 +73,7 @@ export class ReservationService {
       }
       setDoc(doc(this.reservationsCollection), {
         tripID: doc(this.tripsCollection, reservation.tripID),
+        when: Timestamp.now(),
         quantity: reservation.quantity,
       }).then(() => {
         console.log(`Reservation ${reservation.tripID} saved`);
