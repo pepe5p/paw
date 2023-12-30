@@ -8,10 +8,9 @@ import {ReservationService} from "../../services/reservation.service";
   styleUrl: './trip-counter.component.css'
 })
 export class TripCounterComponent implements OnInit {
-  reservedTripsCount: number = 0;
   reservationService: ReservationService = inject(ReservationService);
 
-  constructor() {}
+  reservedTripsCount: number = 0;
 
   ngOnInit(): void {
     this.reservationService.reservedTripsCount$.subscribe((count: number) => {

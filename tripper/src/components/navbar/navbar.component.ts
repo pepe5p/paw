@@ -3,6 +3,7 @@ import {RouterLink, RouterLinkActive, RouterOutlet} from "@angular/router";
 import {NgForOf} from "@angular/common";
 import {CurrencyService} from "../../services/currency.service";
 import {TripCounterComponent} from "../trip-counter/trip-counter.component";
+import {TripAlertComponent} from "../trip-alert/trip-alert.component";
 
 @Component({
   selector: 'app-navbar',
@@ -12,7 +13,8 @@ import {TripCounterComponent} from "../trip-counter/trip-counter.component";
     RouterOutlet,
     RouterLinkActive,
     NgForOf,
-    TripCounterComponent
+    TripCounterComponent,
+    TripAlertComponent
   ],
   templateUrl: './navbar.component.html',
   styleUrl: './navbar.component.css'
