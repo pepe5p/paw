@@ -1,5 +1,5 @@
 import {Component, inject, OnInit} from '@angular/core';
-import {TripData, Trip, TripWithReservation} from '../../models/trip.model';
+import {TripData, Trip, TripWithCumulatedReservations} from '../../models/trip.model';
 import { TripService } from "../../services/trip.service";
 import {NgClass, NgForOf, NgIf, NgOptimizedImage, UpperCasePipe} from "@angular/common";
 import {CurrencyConversionPipe} from "../../pipes/currency-conversion.pipe";
@@ -38,8 +38,8 @@ export class TripsComponent implements OnInit {
   pageSize = 12;
   totalPages = 0;
 
-  trips: TripWithReservation[] = [];
-  allTrips: TripWithReservation[] = [];
+  trips: TripWithCumulatedReservations[] = [];
+  allTrips: TripWithCumulatedReservations[] = [];
 
   cheapestPricePLN: number = 0;
   highestPricePLN: number = 0;
@@ -59,7 +59,17 @@ export class TripsComponent implements OnInit {
 
   fetchTrips(): void {
     this.tripService.getTrips().subscribe((trips) => {
-      this.allTrips = trips
+      const reservations = this.reservationService.getReservations();
+      const finalTrips = [];
+      for (const trip of trips) {
+        const reservation = reservations.find((r) => r.tripID === trip.id);
+        let finalTrip = {userReservationCount: 0, ...trip};
+        if (reservation) {
+          finalTrip.userReservationCount = reservation.quantity;
+        }
+        finalTrips.push(finalTrip);
+      }
+      this.allTrips = finalTrips
       this.renderTrips();
     });
   }
@@ -80,32 +90,32 @@ export class TripsComponent implements OnInit {
     });
   }
 
-  emptySlots(trip: TripWithReservation): number {
-    return trip.maxPeople - trip.reservation_count;
+  emptySlots(trip: TripWithCumulatedReservations): number {
+    return trip.maxPeople - trip.reservationCount - trip.userReservationCount;
   }
 
-  reserveSlot(trip: TripWithReservation): void {
-    trip.reservation_count++;
+  reserveSlot(trip: TripWithCumulatedReservations): void {
+    trip.userReservationCount++;
     this.reservationService.addReservation({tripID: trip.id, quantity: 1});
     this.renderTrips();
   }
 
-  cancelReservation(trip: TripWithReservation): void {
-    trip.reservation_count--;
+  cancelReservation(trip: TripWithCumulatedReservations): void {
+    trip.userReservationCount--;
     this.reservationService.removeReservation({tripID: trip.id, quantity: 1});
     this.renderTrips();
   }
 
-  isLowAvailability(trip: TripWithReservation): boolean {
-    return trip.reservation_count >= trip.maxPeople - this.LOW_AVAILABILITY_THRESHOLD;
+  isLowAvailability(trip: TripWithCumulatedReservations): boolean {
+    return trip.userReservationCount + trip.reservationCount >= trip.maxPeople - this.LOW_AVAILABILITY_THRESHOLD;
   }
 
-  isAddButtonHidden(trip: TripWithReservation): boolean {
-    return trip.reservation_count >= trip.maxPeople;
+  isAddButtonHidden(trip: TripWithCumulatedReservations): boolean {
+    return trip.userReservationCount + trip.reservationCount >= trip.maxPeople;
   }
 
-  isRemoveButtonHidden(trip: TripWithReservation) {
-    return 0 >= trip.reservation_count;
+  isRemoveButtonHidden(trip: TripWithCumulatedReservations) {
+    return 0 == trip.userReservationCount;
   }
 
   isDeleteButtonHidden(_trip: TripData) {

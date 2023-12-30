@@ -20,5 +20,9 @@ export interface TripWithRating extends Trip {
 }
 
 export interface TripWithReservation extends Trip {
-  reservation_count: number;
+  reservationCount: number;
+}
+
+export interface TripWithCumulatedReservations extends TripWithReservation {
+  userReservationCount: number
 }

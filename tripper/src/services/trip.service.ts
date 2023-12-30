@@ -32,7 +32,7 @@ export class TripService {
 
           return {
             id: tripId,
-            reservation_count,
+            reservationCount: reservation_count,
             ...tripDoc.data(),
           } as TripWithReservation;
         });
