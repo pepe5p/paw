@@ -96,13 +96,13 @@ export class TripsComponent implements OnInit {
 
   reserveSlot(trip: TripWithCumulatedReservations): void {
     trip.userReservationCount++;
-    this.reservationService.addReservation({tripID: trip.id, quantity: 1});
+    this.reservationService.addReservation(trip.id);
     this.renderTrips();
   }
 
   cancelReservation(trip: TripWithCumulatedReservations): void {
     trip.userReservationCount--;
-    this.reservationService.removeReservation({tripID: trip.id, quantity: 1});
+    this.reservationService.removeReservation(trip.id);
     this.renderTrips();
   }
 

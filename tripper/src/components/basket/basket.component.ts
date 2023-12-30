@@ -60,7 +60,7 @@ export class BasketComponent {
   }
 
   removeReservation(reservation: ReservationWithTrip) {
-    this.reservationService.removeReservation(reservation);
+    this.reservationService.removeReservation(reservation.tripID);
     this.reservations = this.reservations.filter(
       (r) => r.tripID !== reservation.tripID
     );
@@ -69,14 +69,14 @@ export class BasketComponent {
 
   incrementQuantity(reservation: ReservationWithTrip) {
     reservation.quantity++;
-    this.reservationService.addReservation({tripID: reservation.tripID, quantity: 1});
+    this.reservationService.addReservation(reservation.tripID);
     this.calculateTotalPrice();
   }
 
   decrementQuantity(reservation: ReservationWithTrip) {
     if (reservation.quantity > 1) {
       reservation.quantity--;
-      this.reservationService.removeReservation({tripID: reservation.tripID, quantity: 1});
+      this.reservationService.removeReservation(reservation.tripID);
     }
     this.calculateTotalPrice();
   }

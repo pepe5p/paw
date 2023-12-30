@@ -1,6 +1,6 @@
 import {inject, Injectable} from '@angular/core';
 import {Reservation} from "../models/reservation.model";
-import {collection, collectionData, doc, Firestore, getDocs, setDoc} from "@angular/fire/firestore";
+import {collection, collectionData, doc, Firestore, getDocs, setDoc, Timestamp} from "@angular/fire/firestore";
 import {BehaviorSubject, Observable} from "rxjs";
 
 @Injectable({
@@ -33,34 +33,34 @@ export class ReservationService {
     return collectionData(this.reservationsCollection);
   }
 
-  addReservation(reservation: Reservation): void {
+  addReservation(tripID: string): void {
     const alreadySavedReservation = this.reservations.find(
-      r => r.tripID === reservation.tripID
+      r => r.tripID === tripID
     );
 
     if (alreadySavedReservation) {
-      alreadySavedReservation.quantity += reservation.quantity;
+      alreadySavedReservation.quantity++;
       this.updateReservedTripsCount();
       return
     }
 
-    this.reservations.push(reservation);
+    this.reservations.push({tripID: tripID, quantity: 1, when: Timestamp.now()});
     this.updateReservedTripsCount();
   }
 
-  removeReservation(reservation: Reservation): void {
+  removeReservation(tripID: string): void {
     const alreadySavedReservation = this.reservations.find(
-      r => r.tripID === reservation.tripID
+      r => r.tripID === tripID
     );
 
     if (!alreadySavedReservation) {
       return;
     }
 
-    alreadySavedReservation.quantity -= reservation.quantity;
+    alreadySavedReservation.quantity--;
 
     if (alreadySavedReservation.quantity <= 0) {
-      this.reservations = this.reservations.filter((r) => r.tripID !== reservation.tripID);
+      this.reservations = this.reservations.filter((r) => r.tripID !== tripID);
     }
     this.updateReservedTripsCount();
   }

@@ -53,7 +53,7 @@ export class HistoryComponent implements OnInit {
           };
         });
         this.reservations.sort((a, b) => {
-          return b.trip.startDate.toMillis() - a.trip.startDate.toMillis();
+          return b.when.toMillis() - a.when.toMillis();
         });
       });
     });
