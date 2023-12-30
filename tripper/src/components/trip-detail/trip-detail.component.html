@@ -1,0 +1,45 @@
+<div class="card p-3 my-4">
+  <div class="card-body row">
+    <div class="col">
+      <h2 class="card-title">{{ trip.name | uppercase }}</h2>
+      <div class="mb-3">
+        <app-star-rating [clickable]="false" [selectedStars]="trip.stars"></app-star-rating>
+      </div>
+      <p class="card-text">{{ trip.description }}</p>
+    </div>
+    <div class="col">
+      <p class="card-text"><strong>Kraj:</strong> {{ trip.country | uppercase }}</p>
+      <p class="card-text"><strong>Cena:</strong> {{ trip.pricePLN | currencyConversion:selectedCurrency }}</p>
+      <p class="card-text">
+        <strong>Wolne miejsca:</strong> {{ emptySlots() }} z {{ trip.maxPeople }}
+      </p>
+      <p class="card-text"><strong>Wyjazd:</strong> {{ trip.startDate | formatTimestamp }}</p>
+      <p class="card-text"><strong>Powrót:</strong> {{ trip.endDate | formatTimestamp }}</p>
+      <div class="flex flex-wrap">
+        <button *ngIf="!isAddButtonHidden()" class="btn btn-outline-dark" (click)="reserveSlot()">Zarezerwuj</button>
+        <button *ngIf="!isRemoveButtonHidden()" class="btn btn-outline-dark" (click)="cancelReservation()">Cofnij</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="tripCarousel" class="carousel slide carousel-fade" data-bs-ride="carousel">
+    <div class="carousel-inner">
+      <div *ngFor="let image of gallery; let i = index" class="carousel-item" [class.active]="i === 0">
+        <div class="ratio ratio-16x9">
+          <img [src]="image" class="img-fluid" alt="Slide {{i + 1}}">
+        </div>
+      </div>
+    </div>
+
+    <button class="carousel-control-prev" type="button" data-bs-target="#tripCarousel" data-bs-slide="prev">
+      <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+      <span class="visually-hidden">Previous</span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#tripCarousel" data-bs-slide="next">
+      <span class="carousel-control-next-icon" aria-hidden="true"></span>
+      <span class="visually-hidden">Next</span>
+    </button>
+  </div>
+
+
+</div>

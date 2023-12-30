@@ -1,7 +1,7 @@
 import {inject, Injectable} from '@angular/core';
-import {forkJoin, from, map, Observable} from 'rxjs';
+import {concatMap, forkJoin, from, map, Observable} from 'rxjs';
 import {Trip, TripData, TripWithReservation} from '../models/trip.model';
-import {collection, deleteDoc, doc, Firestore, getDocs, setDoc,} from "@angular/fire/firestore";
+import {collection, deleteDoc, doc, Firestore, getDoc, getDocs, setDoc,} from "@angular/fire/firestore";
 
 @Injectable({
   providedIn: 'root',
@@ -16,27 +16,72 @@ export class TripService {
     this.tripsCollection = collection(this.firestore, 'trips');
   }
 
-  getTrips(): Observable<TripWithReservation[]> {
+  getTripByID(tripID: string): Observable<TripWithReservation> {
+    const tripDoc$ = from(getDoc(doc(this.tripsCollection, tripID)));
+    const reservations$ = from(getDocs(this.reservationsCollection));
+
     return forkJoin({
-      reservations: from(getDocs(this.reservationsCollection)),
-      trips: from(getDocs(this.tripsCollection)),
+      tripDoc: tripDoc$,
+      reservations: reservations$,
+    }).pipe(
+      concatMap(({ tripDoc, reservations }) => {
+        const trip = tripDoc.data();
+        const reservation_count = reservations.docs
+          .filter((reservation) => reservation.data()['tripID'].id === tripID)
+          .reduce((sum, reservation) => sum + reservation.data()['quantity'], 0);
+
+        // Assuming there is a reviews collection inside the trip document
+        const reviews$ = from(getDocs(collection(this.tripsCollection, tripID, 'reviews')));
+
+        return reviews$.pipe(
+          map(reviews => {
+            const reviewsData = reviews.docs.map(review => review.data());
+            return {
+              id: tripID,
+              reservationCount: reservation_count,
+              reviews: reviewsData,
+              stars: reviewsData.reduce((sum, review) => sum + review["stars"], 0) / reviewsData.length,
+              ...trip,
+            } as TripWithReservation;
+          })
+        );
+      })
+    );
+  }
+
+  getTrips(): Observable<TripWithReservation[]> {
+    const reservations$ = from(getDocs(this.reservationsCollection));
+    const trips$ = from(getDocs(this.tripsCollection));
+
+    return forkJoin({
+      reservations: reservations$,
+      trips: trips$,
     }).pipe(
       map(({ reservations, trips }) => {
         return trips.docs.map((tripDoc) => {
           const tripId = tripDoc.id;
           const reservation_count = reservations.docs
-            .filter((reservation) => {
-              return reservation.data()['tripID'].id === tripId;
-            })
+            .filter((reservation) => reservation.data()['tripID'].id === tripId)
             .reduce((sum, reservation) => sum + reservation.data()['quantity'], 0);
 
-          return {
-            id: tripId,
-            reservationCount: reservation_count,
-            ...tripDoc.data(),
-          } as TripWithReservation;
+          // Assuming there is a reviews collection inside the trip document
+          const reviews$ = from(getDocs(collection(this.tripsCollection, tripId, 'reviews')));
+
+          return reviews$.pipe(
+            map(reviews => {
+              const reviewsData = reviews.docs.map(review => review.data());
+              return {
+                id: tripId,
+                reservationCount: reservation_count,
+                reviews: reviewsData,
+                stars: reviewsData.reduce((sum, review) => sum + review["stars"], 0) / reviewsData.length,
+                ...tripDoc.data(),
+              } as TripWithReservation;
+            })
+          );
         });
-      })
+      }),
+      concatMap(tripsWithReviews$ => forkJoin(tripsWithReviews$))
     );
   }
 

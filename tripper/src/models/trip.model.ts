@@ -1,4 +1,5 @@
 import {Timestamp} from "@angular/fire/firestore";
+import {Review} from "./review.model";
 
 export interface TripData {
   name: string;
@@ -15,12 +16,10 @@ export interface Trip extends TripData {
   id: string;
 }
 
-export interface TripWithRating extends Trip {
-  rating: number;
-}
-
 export interface TripWithReservation extends Trip {
   reservationCount: number;
+  reviews: Review[];
+  stars: number;
 }
 
 export interface TripWithCumulatedReservations extends TripWithReservation {

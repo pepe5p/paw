@@ -2,7 +2,7 @@ import {ChangeDetectionStrategy, Component} from '@angular/core';
 import {NgForOf} from "@angular/common";
 
 @Component({
-  selector: 'app-trips-filters',
+  selector: 'app-trip-list-filters',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [

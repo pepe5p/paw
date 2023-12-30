@@ -3,7 +3,7 @@
     <h2 class="">Wycieczki</h2>
   </div>
 
-<!--  <app-trips-filters></app-trips-filters>-->
+<!--  <app-trip-list-filters></app-trip-list-filters>-->
 
   <div class="row">
     <div *ngFor="let trip of trips | searchPipe : search" class="col-sm-6 col-lg-4 col-xl-3 mb-4">
@@ -14,13 +14,14 @@
              'most-expensive': isMostExpensiveTrip(trip)
            }">
         <div class="ratio ratio-1x1 rounded-circle overflow-hidden">
-          <img [src]="trip.imageUrl" alt="trip" class="card-img-top img-cover" >
+          <a [routerLink]="['/trips', trip.id]">
+            <img [src]="trip.imageUrl" alt="trip" class="card-img-top img-cover">
+          </a>
         </div>
         <div class="card-body">
           <h4 class="card-title">{{ trip.name | uppercase }}</h4>
-          <p class="card-text">{{ trip.description }}</p>
           <div class="mb-3">
-            <app-star-rating [selectedStars]="3" (ratingChanged)="updateRating(trip, $event)"></app-star-rating>
+            <app-star-rating [clickable]="false" [selectedStars]="trip.stars"></app-star-rating>
           </div>
           <p class="card-text"><strong>Kraj:</strong> {{ trip.country | uppercase }}</p>
           <p class="card-text"><strong>Cena:</strong> {{ trip.pricePLN | currencyConversion:selectedCurrency }}</p>

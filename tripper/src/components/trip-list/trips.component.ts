@@ -10,10 +10,11 @@ import {SearchPipe} from "../../pipes/search.pipe";
 import {FormatTimestampPipe} from "../../pipes/format-timestamp.pipe";
 import {FormsModule} from "@angular/forms";
 import {ReservationService} from "../../services/reservation.service";
+import {RouterLink, RouterLinkActive} from "@angular/router";
 
 
 @Component({
-  selector: 'app-trips',
+  selector: 'app-trip-list',
   standalone: true,
   imports: [
     NgForOf,
@@ -27,11 +28,17 @@ import {ReservationService} from "../../services/reservation.service";
     SearchPipe,
     FormatTimestampPipe,
     FormsModule,
+    RouterLink,
+    RouterLinkActive,
   ],
   templateUrl: './trips.component.html',
   styleUrls: ['./trips.component.css']
 })
 export class TripsComponent implements OnInit {
+  tripService: TripService = inject(TripService)
+  currencyService: CurrencyService = inject(CurrencyService)
+  reservationService: ReservationService = inject(ReservationService);
+
   LOW_AVAILABILITY_THRESHOLD = 3;
 
   currentPage = 1;
@@ -47,10 +54,6 @@ export class TripsComponent implements OnInit {
   selectedCurrency = 'PLN';
 
   search: string = '';
-
-  tripService: TripService = inject(TripService)
-  currencyService: CurrencyService = inject(CurrencyService)
-  reservationService: ReservationService = inject(ReservationService);
 
   ngOnInit(): void {
     this.fetchTrips();
@@ -132,10 +135,6 @@ export class TripsComponent implements OnInit {
 
   isMostExpensiveTrip(trip: Trip): boolean {
     return trip.pricePLN == this.highestPricePLN;
-  }
-
-  updateRating(trip: TripData, stars: number): void {
-    return;
   }
 
   nextPage(): void {
