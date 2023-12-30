@@ -6,6 +6,8 @@ import { ReservationService } from '../../services/reservation.service';
 import { CurrencyService } from '../../services/currency.service';
 import {CurrencyConversionPipe} from "../../pipes/currency-conversion.pipe";
 import {NgForOf, NgIf} from "@angular/common";
+import {FormatTimestampPipe} from "../../pipes/format-timestamp.pipe";
+import {Timestamp} from "@angular/fire/firestore";
 
 @Component({
   selector: 'app-history',
@@ -16,6 +18,7 @@ import {NgForOf, NgIf} from "@angular/common";
     CurrencyConversionPipe,
     NgForOf,
     NgIf,
+    FormatTimestampPipe,
   ]
 })
 export class HistoryComponent implements OnInit {
@@ -45,12 +48,24 @@ export class HistoryComponent implements OnInit {
           }
           return {
             ...reservation,
-            name: trip.name,
-            pricePLN: trip.pricePLN,
+            trip: trip,
             selected: true,
           };
         });
+        this.reservations.sort((a, b) => {
+          return b.trip.startDate.toMillis() - a.trip.startDate.toMillis();
+        });
       });
     });
+  }
+
+  getStatus(reservation: ReservationWithTrip): number {
+    if (reservation.trip.startDate > Timestamp.now()) {
+      return 0;
+    }
+    if (reservation.trip.endDate >= Timestamp.now()) {
+      return 1;
+    }
+    return 2;
   }
 }

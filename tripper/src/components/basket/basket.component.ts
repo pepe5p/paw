@@ -51,8 +51,7 @@ export class BasketComponent {
         }
         return {
           ...reservation,
-          name: trip.name,
-          pricePLN: trip.pricePLN,
+          trip: trip,
           selected: true,
         };
       });
@@ -89,7 +88,7 @@ export class BasketComponent {
 
   calculateTotalPrice() {
     this.totalPrice = this.reservations.reduce(
-      (sum, r) => (r.selected ? sum + r.pricePLN * r.quantity : sum),
+      (sum, r) => (r.selected ? sum + r.trip.pricePLN * r.quantity : sum),
       0
     );
   }

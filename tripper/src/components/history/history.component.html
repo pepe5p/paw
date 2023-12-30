@@ -8,18 +8,27 @@
   <div *ngIf="reservations.length > 0" class="mt-3">
     <div class="row border-bottom fw-bold mb-2">
       <div class="col">Nazwa wycieczki</div>
+      <div class="col">Kraj</div>
+      <div class="col">Data</div>
       <div class="col">Cena</div>
       <div class="col">Ilość</div>
+      <div class="col">Status</div>
     </div>
 
     <div *ngFor="let reservation of reservations" class="row align-items-center mb-2">
-      <div class="col">{{ reservation.name }}</div>
-      <div class="col">{{ reservation.pricePLN | currencyConversion:selectedCurrency }}</div>
+      <div class="col">{{ reservation.trip.name }}</div>
+      <div class="col">{{ reservation.trip.country }}</div>
+      <div class="col">od {{ reservation.trip.startDate | formatTimestamp }} do {{ reservation.trip.endDate | formatTimestamp }}</div>
+      <div class="col">{{ reservation.trip.pricePLN | currencyConversion:selectedCurrency }}</div>
       <div class="col">
         <div class="input-group">
           <span class="input-group-text">{{ reservation.quantity }}</span>
         </div>
       </div>
+      <div class="col">
+        <div *ngIf="getStatus(reservation) === 0" class="alert alert-success">oczekiwanie na rozpoczęcie</div>
+        <div *ngIf="getStatus(reservation) === 1" class="alert alert-warning">w trakcie</div>
+        <div *ngIf="getStatus(reservation) === 2" class="alert alert-dark">zakończona</div>
     </div>
   </div>
 </div>

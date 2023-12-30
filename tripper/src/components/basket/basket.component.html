@@ -15,8 +15,8 @@
     </div>
 
     <div *ngFor="let reservation of reservations" class="row align-items-center mb-2">
-      <div class="col">{{ reservation.name }}</div>
-      <div class="col">{{ reservation.pricePLN | currencyConversion:selectedCurrency }}</div>
+      <div class="col">{{ reservation.trip.name }}</div>
+      <div class="col">{{ reservation.trip.pricePLN | currencyConversion:selectedCurrency }}</div>
       <div class="col">
         <div class="input-group">
           <button class="btn btn-outline-secondary" type="button" (click)="decrementQuantity(reservation)">-</button>
