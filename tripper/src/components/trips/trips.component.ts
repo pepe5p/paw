@@ -1,4 +1,4 @@
-import {Component, inject} from '@angular/core';
+import {Component, inject, OnInit} from '@angular/core';
 import {TripData, Trip, TripWithReservation} from '../../models/trip.model';
 import { TripService } from "../../services/trip.service";
 import {NgClass, NgForOf, NgIf, NgOptimizedImage, UpperCasePipe} from "@angular/common";
@@ -31,7 +31,7 @@ import {ReservationService} from "../../services/reservation.service";
   templateUrl: './trips.component.html',
   styleUrls: ['./trips.component.css']
 })
-export class TripsComponent {
+export class TripsComponent implements OnInit {
   LOW_AVAILABILITY_THRESHOLD = 3;
 
   currentPage = 1;
@@ -51,10 +51,6 @@ export class TripsComponent {
   tripService: TripService = inject(TripService)
   currencyService: CurrencyService = inject(CurrencyService)
   reservationService: ReservationService = inject(ReservationService);
-
-  // TODO: Wyświetl również sumaryczną ilość aktualnie zarezerwowanych wycieczek - jeśli wynosi on
-  // więcej niż 10 ma być wyświetlana na zielonym tle, jeśli poniżej 10 na czerwonym tle.
-  // (1pkt)
 
   ngOnInit(): void {
     this.fetchTrips();
@@ -84,30 +80,32 @@ export class TripsComponent {
     });
   }
 
-  isLowAvailability(trip: TripData): boolean {
-    return 0 >= trip.maxPeople - this.LOW_AVAILABILITY_THRESHOLD;
+  emptySlots(trip: TripWithReservation): number {
+    return trip.maxPeople - trip.reservation_count;
   }
 
-  emptySlots(trip: TripData): number {
-    return trip.maxPeople;
-  }
-
-  reserveSlot(trip: Trip): void {
-    // this.tripService.reservePlace(trip.id).subscribe();
+  reserveSlot(trip: TripWithReservation): void {
+    trip.reservation_count++;
     this.reservationService.addReservation({tripID: trip.id, quantity: 1});
+    this.renderTrips();
   }
 
-  cancelReservation(trip: Trip): void {
-    // this.tripService.cancelReservation(trip.id).subscribe();
-    this.reservationService.addReservation({tripID: trip.id, quantity: 1});
+  cancelReservation(trip: TripWithReservation): void {
+    trip.reservation_count--;
+    this.reservationService.removeReservation({tripID: trip.id, quantity: 1});
+    this.renderTrips();
   }
 
-  isAddButtonHidden(trip: TripData): boolean {
-    return 0 >= trip.maxPeople;
+  isLowAvailability(trip: TripWithReservation): boolean {
+    return trip.reservation_count >= trip.maxPeople - this.LOW_AVAILABILITY_THRESHOLD;
   }
 
-  isRemoveButtonHidden(trip: TripData) {
-    return 0 <= 0;
+  isAddButtonHidden(trip: TripWithReservation): boolean {
+    return trip.reservation_count >= trip.maxPeople;
+  }
+
+  isRemoveButtonHidden(trip: TripWithReservation) {
+    return 0 >= trip.reservation_count;
   }
 
   isDeleteButtonHidden(_trip: TripData) {

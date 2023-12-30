@@ -1,12 +1,12 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import {Trip} from "../models/trip.model";
+import {Trip, TripWithReservation} from "../models/trip.model";
 
 @Pipe({
   standalone: true,
   name: 'searchPipe',
 })
 export class SearchPipe implements PipeTransform {
-  transform(courses: Trip[], searchText: string): Trip[] {
+  transform(courses: TripWithReservation[], searchText: string): TripWithReservation[] {
     if (!courses)
       return [];
     if (!searchText)

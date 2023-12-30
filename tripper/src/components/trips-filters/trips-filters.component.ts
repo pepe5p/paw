@@ -1,6 +1,5 @@
 import {ChangeDetectionStrategy, Component} from '@angular/core';
 import {NgForOf} from "@angular/common";
-import {CurrencyService} from "../../services/currency.service";
 
 @Component({
   selector: 'app-trips-filters',

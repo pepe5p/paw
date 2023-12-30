@@ -71,6 +71,7 @@ export class BasketComponent {
   incrementQuantity(reservation: ReservationWithTrip) {
     reservation.quantity++;
     this.reservationService.addReservation({tripID: reservation.tripID, quantity: 1});
+    this.calculateTotalPrice();
   }
 
   decrementQuantity(reservation: ReservationWithTrip) {
@@ -78,6 +79,7 @@ export class BasketComponent {
       reservation.quantity--;
       this.reservationService.removeReservation({tripID: reservation.tripID, quantity: 1});
     }
+    this.calculateTotalPrice();
   }
 
   toggleReservation(reservation: ReservationWithTrip) {

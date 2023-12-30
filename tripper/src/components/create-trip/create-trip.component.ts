@@ -53,11 +53,8 @@ export class CreateTripComponent {
         imageUrl: "https://picsum.photos/200/300",
       };
 
-      this.tripService.addTrip(newTrip).subscribe(
-        () => {
-          this.router.navigate(['/trips']).then();
-        },
-      );
+      this.tripService.addTrip(newTrip);
+      this.router.navigate(['/trips']).then();
     }
   }
 }
