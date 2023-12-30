@@ -1,0 +1,21 @@
+.contact-details {
+  margin-bottom: 20px;
+}
+
+img {
+  width: 100%;
+  height: auto;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.card {
+  background-color: rgba(255, 255, 255, 0.4);
+  color: white;
+  text-shadow: black 1px 1px 3px;
+}
+
+.card a {
+  color: white;
+}
