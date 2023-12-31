@@ -4,7 +4,7 @@ import { TripService } from "../../services/trip.service";
 import {NgClass, NgForOf, NgIf, NgOptimizedImage, UpperCasePipe} from "@angular/common";
 import {CurrencyConversionPipe} from "../../pipes/currency-conversion.pipe";
 import {StarRatingComponent} from "../star-rating/star-rating.component";
-import {TripsFiltersComponent} from "../trips-filters/trips-filters.component";
+import {FilterComponent} from "../trips-filters/trips-filters.component";
 import {CurrencyService} from "../../services/currency.service";
 import {SearchPipe} from "../../pipes/search.pipe";
 import {FormatTimestampPipe} from "../../pipes/format-timestamp.pipe";
@@ -24,17 +24,17 @@ import {RouterLink, RouterLinkActive} from "@angular/router";
     UpperCasePipe,
     CurrencyConversionPipe,
     StarRatingComponent,
-    TripsFiltersComponent,
     SearchPipe,
     FormatTimestampPipe,
     FormsModule,
     RouterLink,
     RouterLinkActive,
+    FilterComponent,
   ],
-  templateUrl: './trips.component.html',
-  styleUrls: ['./trips.component.css']
+  templateUrl: './trip-list.component.html',
+  styleUrls: ['./trip-list.component.css']
 })
-export class TripsComponent implements OnInit {
+export class TripListComponent implements OnInit {
   tripService: TripService = inject(TripService)
   currencyService: CurrencyService = inject(CurrencyService)
   reservationService: ReservationService = inject(ReservationService);
@@ -81,6 +81,9 @@ export class TripsComponent implements OnInit {
     this.totalPages = Math.ceil(this.allTrips.length / this.pageSize);
     this.trips = this.allTrips.slice((this.currentPage - 1) * this.pageSize, this.currentPage * this.pageSize);
     const sortedTrips = [...this.allTrips]
+    if (sortedTrips.length === 0) {
+      return;
+    }
     sortedTrips.sort((a, b) => a.pricePLN - b.pricePLN);
     this.cheapestPricePLN = sortedTrips[0].pricePLN;
     this.highestPricePLN = sortedTrips[sortedTrips.length - 1].pricePLN;

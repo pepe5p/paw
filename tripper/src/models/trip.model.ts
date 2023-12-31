@@ -16,12 +16,25 @@ export interface Trip extends TripData {
   id: string;
 }
 
-export interface TripWithReservation extends Trip {
-  reservationCount: number;
+export interface TripWithReviews extends Trip {
   reviews: Review[];
   stars: number;
 }
 
+export interface TripWithReservation extends TripWithReviews {
+  reservationCount: number;
+}
+
 export interface TripWithCumulatedReservations extends TripWithReservation {
   userReservationCount: number
+}
+
+export interface TripFilter {
+  name: string | null
+  country: string[];
+  startDate: Timestamp | null;
+  endDate: Timestamp | null;
+  priceFrom: number | null;
+  priceTo: number | null;
+  rating: number[];
 }

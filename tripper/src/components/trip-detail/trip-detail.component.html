@@ -1,9 +1,13 @@
-<div class="card p-3 my-4">
+<a routerLink="/trips" routerLinkActive="active" class="btn btn-outline-dark mb-3">
+  Zobacz wszystkie wycieczki
+</a>
+
+<div class="card p-3 mb-4">
   <div class="card-body row">
     <div class="col">
       <h2 class="card-title">{{ trip.name | uppercase }}</h2>
       <div class="mb-3">
-        <app-star-rating [clickable]="false" [selectedStars]="trip.stars"></app-star-rating>
+        <app-star-rating [clickable]="false" [starCount]="trip.stars"></app-star-rating>
       </div>
       <p class="card-text">{{ trip.description }}</p>
     </div>
@@ -40,6 +44,8 @@
       <span class="visually-hidden">Next</span>
     </button>
   </div>
-
-
 </div>
+
+<!-- TODO: add map -->
+
+<app-review-section [trip]="trip"></app-review-section>

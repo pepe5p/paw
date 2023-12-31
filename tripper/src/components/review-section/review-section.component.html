@@ -1,0 +1,36 @@
+<div *ngIf="trip" class="my-2">
+  <h3>Dodaj recenzję:</h3>
+  <form [formGroup]="reviewForm" (ngSubmit)="submitReview()">
+    <div class="mb-3">
+      <app-star-rating [clickable]="true" [starCount]="0" (ratingChanged)="onRatingChanged($event)"></app-star-rating>
+      <div *ngIf="reviewForm.get('stars')?.invalid && reviewForm.get('stars')?.touched" class="text-danger">
+        Wybierz ocenę od 1 do 5 gwiazdek.
+      </div>
+    </div>
+    <div class="mb-3">
+      <label for="description" class="form-label">Opis:</label>
+      <textarea id="description" class="form-control" formControlName="description"></textarea>
+      <div *ngIf="reviewForm.get('description')?.invalid && reviewForm.get('description')?.touched" class="text-danger">
+        Opis musi mieć od 50 do 500 znaków.
+      </div>
+    </div>
+    <button type="submit" class="btn btn-primary">Dodaj recenzję</button>
+  </form>
+</div>
+
+<div *ngIf="trip && trip.reviews && trip.reviews.length > 0" class="review-section my-4">
+  <h3>Recenzje:</h3>
+  <ul class="list-group">
+    <li class="list-group-item" *ngFor="let review of trip.reviews">
+      <div>
+        <strong>{{ "Maciuś" }}</strong> <!-- TODO -->
+        <app-star-rating [clickable]="false" [starCount]="review.stars"></app-star-rating>
+        <p>{{ review.description }}</p>
+      </div>
+    </li>
+  </ul>
+</div>
+
+<div *ngIf="trip && (!trip.reviews || trip.reviews.length === 0)" class="alert alert-info">
+  Nie ma jeszcze recenzji dla tej wycieczki, bądź pierwszy!
+</div>

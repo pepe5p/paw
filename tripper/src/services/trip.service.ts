@@ -1,19 +1,24 @@
-import {inject, Injectable} from '@angular/core';
-import {concatMap, forkJoin, from, map, Observable} from 'rxjs';
-import {Trip, TripData, TripWithReservation} from '../models/trip.model';
+import {inject, Injectable, OnInit} from '@angular/core';
+import {BehaviorSubject, concatMap, forkJoin, from, map, Observable} from 'rxjs';
+import {Trip, TripData, TripFilter, TripWithReservation} from '../models/trip.model';
 import {collection, deleteDoc, doc, Firestore, getDoc, getDocs, setDoc,} from "@angular/fire/firestore";
 
 @Injectable({
   providedIn: 'root',
 })
-export class TripService {
-  reservationsCollection;
-  tripsCollection;
+export class TripService implements OnInit {
   firestore: Firestore = inject(Firestore);
 
-  constructor() {
-    this.reservationsCollection = collection(this.firestore, 'reservations');
-    this.tripsCollection = collection(this.firestore, 'trips');
+  reservationsCollection = collection(this.firestore, 'reservations');
+  tripsCollection = collection(this.firestore, 'trips');
+
+  private tripsSubject = new BehaviorSubject<TripWithReservation[]>([]);
+  trips$ = this.tripsSubject.asObservable();
+
+  ngOnInit() {
+    this.getTrips().subscribe((trips) => {
+      this.tripsSubject.next(trips);
+    });
   }
 
   getTripByID(tripID: string): Observable<TripWithReservation> {
@@ -30,17 +35,23 @@ export class TripService {
           .filter((reservation) => reservation.data()['tripID'].id === tripID)
           .reduce((sum, reservation) => sum + reservation.data()['quantity'], 0);
 
-        // Assuming there is a reviews collection inside the trip document
         const reviews$ = from(getDocs(collection(this.tripsCollection, tripID, 'reviews')));
 
         return reviews$.pipe(
           map(reviews => {
             const reviewsData = reviews.docs.map(review => review.data());
+            let stars;
+            if (reviewsData.length === 0) {
+              stars = 0;
+            }
+            else {
+              stars = reviewsData.reduce((sum, review) => sum + review["stars"], 0) / reviewsData.length;
+            }
             return {
               id: tripID,
               reservationCount: reservation_count,
               reviews: reviewsData,
-              stars: reviewsData.reduce((sum, review) => sum + review["stars"], 0) / reviewsData.length,
+              stars: stars,
               ...trip,
             } as TripWithReservation;
           })
@@ -64,17 +75,23 @@ export class TripService {
             .filter((reservation) => reservation.data()['tripID'].id === tripId)
             .reduce((sum, reservation) => sum + reservation.data()['quantity'], 0);
 
-          // Assuming there is a reviews collection inside the trip document
           const reviews$ = from(getDocs(collection(this.tripsCollection, tripId, 'reviews')));
 
           return reviews$.pipe(
             map(reviews => {
               const reviewsData = reviews.docs.map(review => review.data());
+              let stars;
+              if (reviewsData.length === 0) {
+                stars = 0;
+              }
+              else {
+                stars = reviewsData.reduce((sum, review) => sum + review["stars"], 0) / reviewsData.length;
+              }
               return {
                 id: tripId,
                 reservationCount: reservation_count,
                 reviews: reviewsData,
-                stars: reviewsData.reduce((sum, review) => sum + review["stars"], 0) / reviewsData.length,
+                stars: stars,
                 ...tripDoc.data(),
               } as TripWithReservation;
             })
@@ -98,6 +115,22 @@ export class TripService {
     const tripDoc = doc(this.tripsCollection, trip.id)
     deleteDoc(tripDoc).then(() => {}).catch((error: any) => {
       console.error('Error deleting trip: ', error);
+    });
+  }
+
+  filterTrips(filter: TripFilter){
+    this.getTrips().subscribe((trips) => {
+      const filteredTrips = trips.filter((trip) => {
+        let name = filter.name === null || trip.name.toLowerCase().includes(filter.name.toLowerCase());
+        let country = filter.country.length === 0 || filter.country.includes(trip.country);
+        let startDate = filter.startDate === null || filter.startDate <= trip.startDate;
+        let endDate = filter.endDate === null || filter.endDate >= trip.endDate;
+        let priceFrom = filter.priceFrom === null || filter.priceFrom <= trip.pricePLN
+        let priceTo = filter.priceTo === null || filter.priceTo >= trip.pricePLN;
+        let rating = filter.rating.length === 0 || filter.rating.includes(Math.floor(trip.stars));
+        return name && country && startDate && endDate && priceFrom && priceTo && rating;
+      });
+      this.tripsSubject.next(filteredTrips);
     });
   }
 }

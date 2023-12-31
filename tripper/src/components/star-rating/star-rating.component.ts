@@ -1,4 +1,3 @@
-// star-rating.component.ts
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import {NgClass, NgForOf} from "@angular/common";
 
@@ -14,7 +13,7 @@ import {NgClass, NgForOf} from "@angular/common";
 })
 export class StarRatingComponent {
   @Input() clickable: boolean = true;
-  @Input() selectedStars: number = 0;
+  @Input() starCount: number = 0;
   @Output() ratingChanged = new EventEmitter<number>();
 
   stars = [1, 2, 3, 4, 5];
@@ -23,7 +22,7 @@ export class StarRatingComponent {
     if (!this.clickable) {
       return;
     }
-    this.selectedStars = stars;
+    this.starCount = stars;
     this.ratingChanged.emit(stars);
   }
 }

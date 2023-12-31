@@ -1,7 +1,7 @@
 import {RouterModule, Routes} from '@angular/router';
 import {HomeComponent} from "../components/home/home.component";
 import {NgModule} from "@angular/core";
-import {TripsComponent} from "../components/trip-list/trips.component";
+import {TripListComponent} from "../components/trip-list/trip-list.component";
 import {CreateTripComponent} from "../components/create-trip/create-trip.component";
 import {BasketComponent} from "../components/basket/basket.component";
 import {AngularFireModule} from "@angular/fire/compat";
@@ -11,7 +11,7 @@ import {TripDetailComponent} from "../components/trip-detail/trip-detail.compone
 
 export const routes: Routes = [
   {path: "", component: HomeComponent},
-  {path: "trips", component: TripsComponent},
+  {path: "trips", component: TripListComponent},
   {path: "trips/:id", component: TripDetailComponent},
   {path: "create-trip", component: CreateTripComponent},
   {path: "basket", component: BasketComponent},

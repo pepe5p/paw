@@ -1,12 +1,12 @@
-<div class="container my-4">
+<div class="container">
   <div class="d-flex justify-content-between align-items-center mb-3">
     <h2 class="">Wycieczki</h2>
   </div>
 
-<!--  <app-trip-list-filters></app-trip-list-filters>-->
+  <app-trips-filters></app-trips-filters>
 
   <div class="row">
-    <div *ngFor="let trip of trips | searchPipe : search" class="col-sm-6 col-lg-4 col-xl-3 mb-4">
+    <div *ngFor="let trip of trips" class="col-sm-6 col-lg-4 col-xl-3 mb-4">
       <div class="card p-3"
            [ngClass]="{
              'low-availability': isLowAvailability(trip),
@@ -21,7 +21,7 @@
         <div class="card-body">
           <h4 class="card-title">{{ trip.name | uppercase }}</h4>
           <div class="mb-3">
-            <app-star-rating [clickable]="false" [selectedStars]="trip.stars"></app-star-rating>
+            <app-star-rating [clickable]="false" [starCount]="trip.stars"></app-star-rating>
           </div>
           <p class="card-text"><strong>Kraj:</strong> {{ trip.country | uppercase }}</p>
           <p class="card-text"><strong>Cena:</strong> {{ trip.pricePLN | currencyConversion:selectedCurrency }}</p>

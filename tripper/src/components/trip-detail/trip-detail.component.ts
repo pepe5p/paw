@@ -7,7 +7,9 @@ import {StarRatingComponent} from "../star-rating/star-rating.component";
 import {CurrencyService} from "../../services/currency.service";
 import {ReservationService} from "../../services/reservation.service";
 import {TripService} from "../../services/trip.service";
-import {ActivatedRoute} from "@angular/router";
+import {ActivatedRoute, RouterLink, RouterLinkActive} from "@angular/router";
+import {ReviewSectionComponent} from "../review-section/review-section.component";
+import {Timestamp} from "@angular/fire/firestore";
 
 @Component({
   selector: 'app-trip-detail',
@@ -18,7 +20,10 @@ import {ActivatedRoute} from "@angular/router";
     NgIf,
     StarRatingComponent,
     UpperCasePipe,
-    NgForOf
+    NgForOf,
+    ReviewSectionComponent,
+    RouterLink,
+    RouterLinkActive
   ],
   templateUrl: './trip-detail.component.html',
   styleUrl: './trip-detail.component.css'
@@ -30,7 +35,21 @@ export class TripDetailComponent implements OnInit {
   reservationService: ReservationService = inject(ReservationService);
 
   gallery: string[] = ["https://picsum.photos/2000/1200", "https://picsum.photos/2000/1201", "https://picsum.photos/2000/1202"];
-  trip: TripWithCumulatedReservations = {} as TripWithCumulatedReservations
+  trip: TripWithCumulatedReservations = {
+    id: '',
+    name: '',
+    description: '',
+    country: '',
+    startDate: Timestamp.now(),
+    endDate: Timestamp.now(),
+    maxPeople: 0,
+    pricePLN: 0,
+    imageUrl: '',
+    reviews: [],
+    stars: 0,
+    reservationCount: 0,
+    userReservationCount: 0
+  };
   selectedCurrency = 'PLN';
 
   ngOnInit(): void {
@@ -47,12 +66,7 @@ export class TripDetailComponent implements OnInit {
         finalTrip.userReservationCount = reservation.quantity;
       }
       this.trip = finalTrip;
-      // this.gallery.push(this.trip.imageUrl);
     });
-  }
-
-  updateRating(stars: number): void {
-
   }
 
   private subscribeToCurrencyChanges(): void {
