@@ -3,13 +3,21 @@ import {FormsModule} from "@angular/forms";
 import {NgForOf} from "@angular/common";
 import {Trip, TripFilter, TripWithReviews} from "../../models/trip.model";
 import {TripService} from "../../services/trip.service";
+import {MatSelectModule} from "@angular/material/select";
+import {MatDatepickerModule} from "@angular/material/datepicker";
+import {MatInputModule} from "@angular/material/input";
+import {MatSliderModule} from "@angular/material/slider";
 
 @Component({
   selector: 'app-trips-filters',
   standalone: true,
   imports: [
     FormsModule,
-    NgForOf
+    NgForOf,
+    MatSelectModule,
+    MatDatepickerModule,
+    MatInputModule,
+    MatSliderModule
   ],
   templateUrl: './trips-filters.component.html',
   styleUrl: './trips-filters.component.css'
@@ -26,7 +34,7 @@ export class FilterComponent implements OnInit {
     endDate: null,
     priceFrom: null,
     priceTo: null,
-    rating: [],
+    rating: null,
   };
 
   filterTrips() {
@@ -34,34 +42,14 @@ export class FilterComponent implements OnInit {
   };
 
   ngOnInit(): void {
+    this.tripService.getTrips().subscribe((trips) => {
+      this.trips = trips;
+      this.countries = this.trips.map((trip: Trip) => trip.country);
+    });
     this.tripService.trips$.subscribe((trips) => {
       this.trips = trips;
+      this.countries = this.trips.map((trip: Trip) => trip.country);
     });
-    this.countries = this.trips.map((trip: Trip) => trip.country);
-  }
-
-  addCountry(country: string) {
-    if (!this.filter.country.includes(country)) {
-      this.filter.country.push(country);
-    }
-    this.filterTrips();
-  }
-
-  removeCountry(country: string) {
-    this.filter.country = this.filter.country.filter((c: string) => c !== country);
-    this.filterTrips();
-  }
-
-  addRating(rating: number) {
-    if (!this.filter.rating.includes(rating)) {
-      this.filter.rating.push(rating);
-    }
-    this.filterTrips();
-  }
-
-  removeRating(rating: number) {
-    this.filter.rating = this.filter.rating.filter((r: number) => r !== rating);
-    this.filterTrips();
   }
 
   highestPrice(): number {
@@ -71,4 +59,5 @@ export class FilterComponent implements OnInit {
   lowestPrice(): number {
     return Math.min(...this.trips.map((trip: Trip) => trip.pricePLN));
   }
+
 }

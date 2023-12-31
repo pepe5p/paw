@@ -8,6 +8,12 @@ import {AngularFireModule} from "@angular/fire/compat";
 import {environment} from '../environments/environment';
 import {HistoryComponent} from "../components/history/history.component";
 import {TripDetailComponent} from "../components/trip-detail/trip-detail.component";
+import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
+import {MatNativeDateModule} from "@angular/material/core";
+import {MatDatepickerModule} from "@angular/material/datepicker";
+import {MatButtonModule} from "@angular/material/button";
+import {MatFormFieldModule} from "@angular/material/form-field";
+import {MatMomentDateModule} from "@angular/material-moment-adapter";
 
 export const routes: Routes = [
   {path: "", component: HomeComponent},
@@ -21,6 +27,12 @@ export const routes: Routes = [
 
 @NgModule({
   imports: [
+    BrowserAnimationsModule,
+    MatDatepickerModule,
+    MatButtonModule,
+    MatFormFieldModule,
+    MatNativeDateModule,
+    MatMomentDateModule,
     RouterModule.forRoot(routes),
     AngularFireModule.initializeApp(environment.firebaseConfig),
   ],

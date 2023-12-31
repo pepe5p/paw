@@ -36,5 +36,5 @@ export interface TripFilter {
   endDate: Timestamp | null;
   priceFrom: number | null;
   priceTo: number | null;
-  rating: number[];
+  rating: number | null;
 }

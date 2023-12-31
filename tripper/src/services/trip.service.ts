@@ -127,7 +127,7 @@ export class TripService implements OnInit {
         let endDate = filter.endDate === null || filter.endDate >= trip.endDate;
         let priceFrom = filter.priceFrom === null || filter.priceFrom <= trip.pricePLN
         let priceTo = filter.priceTo === null || filter.priceTo >= trip.pricePLN;
-        let rating = filter.rating.length === 0 || filter.rating.includes(Math.floor(trip.stars));
+        let rating = filter.rating === null || filter.rating <= Math.floor(trip.stars);
         return name && country && startDate && endDate && priceFrom && priceTo && rating;
       });
       this.tripsSubject.next(filteredTrips);

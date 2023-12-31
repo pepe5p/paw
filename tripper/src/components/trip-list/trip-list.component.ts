@@ -1,12 +1,11 @@
 import {Component, inject, OnInit} from '@angular/core';
-import {TripData, Trip, TripWithCumulatedReservations} from '../../models/trip.model';
+import {TripData, Trip, TripWithCumulatedReservations, TripWithReservation} from '../../models/trip.model';
 import { TripService } from "../../services/trip.service";
 import {NgClass, NgForOf, NgIf, NgOptimizedImage, UpperCasePipe} from "@angular/common";
 import {CurrencyConversionPipe} from "../../pipes/currency-conversion.pipe";
 import {StarRatingComponent} from "../star-rating/star-rating.component";
 import {FilterComponent} from "../trips-filters/trips-filters.component";
 import {CurrencyService} from "../../services/currency.service";
-import {SearchPipe} from "../../pipes/search.pipe";
 import {FormatTimestampPipe} from "../../pipes/format-timestamp.pipe";
 import {FormsModule} from "@angular/forms";
 import {ReservationService} from "../../services/reservation.service";
@@ -24,7 +23,6 @@ import {RouterLink, RouterLinkActive} from "@angular/router";
     UpperCasePipe,
     CurrencyConversionPipe,
     StarRatingComponent,
-    SearchPipe,
     FormatTimestampPipe,
     FormsModule,
     RouterLink,
@@ -53,28 +51,29 @@ export class TripListComponent implements OnInit {
 
   selectedCurrency = 'PLN';
 
-  search: string = '';
-
   ngOnInit(): void {
     this.fetchTrips();
     this.subscribeToCurrencyChanges();
   }
 
   fetchTrips(): void {
-    this.tripService.getTrips().subscribe((trips) => {
-      const reservations = this.reservationService.getReservations();
-      const finalTrips = [];
-      for (const trip of trips) {
-        const reservation = reservations.find((r) => r.tripID === trip.id);
-        let finalTrip = {userReservationCount: 0, ...trip};
-        if (reservation) {
-          finalTrip.userReservationCount = reservation.quantity;
-        }
-        finalTrips.push(finalTrip);
+    this.tripService.getTrips().subscribe((trips) => {this.updateTrips(trips)});
+    this.tripService.trips$.subscribe((trips) => {this.updateTrips(trips)});
+  }
+
+  updateTrips(trips: TripWithReservation[]): void {
+    const reservations = this.reservationService.getReservations();
+    const finalTrips = [];
+    for (const trip of trips) {
+      const reservation = reservations.find((r) => r.tripID === trip.id);
+      let finalTrip = {userReservationCount: 0, ...trip};
+      if (reservation) {
+        finalTrip.userReservationCount = reservation.quantity;
       }
-      this.allTrips = finalTrips
-      this.renderTrips();
-    });
+      finalTrips.push(finalTrip);
+    }
+    this.allTrips = finalTrips
+    this.renderTrips();
   }
 
   renderTrips() {

@@ -1,59 +1,52 @@
 <div class="container-fluid d-flex flex-column flex-lg-row">
   <div class="d-flex flex-column m-3">
-    <label for="name" class="mb-2">Name:</label>
-    <input type="text" name="name" id="name" [(ngModel)]="filter.name" (keyup)="filterTrips()" class="form-control mb-3">
-
-    <div class="dropdown mb-3">
-      <button class="btn btn-secondary dropdown-toggle" type="button" id="countryDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-        Select Country
-      </button>
-      <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-        <li *ngFor="let country of countries" class="dropdown-item" (click)="addCountry(country)">{{country}}</li>
-      </ul>
-      <h2 class="mt-3">Selected:</h2>
-      <div>
-        <button *ngFor="let country of filter.country" class="btn btn-outline-secondary m-2" (click)="removeCountry(country)">
-          {{country}}
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x" viewBox="0 0 16 16">
-            <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708"/>
-          </svg>
-        </button>
-      </div>
-    </div>
+    <mat-form-field>
+      <mat-label>Nazwa</mat-label>
+      <input matInput type="text" name="name" id="name" [(ngModel)]="filter.name" (keyup)="filterTrips()" class="form-control mb-3">
+    </mat-form-field>
   </div>
 
   <div class="d-flex flex-column m-3">
-    <label for="date_start" class="mb-2">Start Date:</label>
-    <input type="date" name="date" id="date_start" [(ngModel)]="filter.startDate" (change)="filterTrips()" class="form-control mb-2">
+    <mat-form-field>
+      <mat-label>Wybierz Kraj</mat-label>
+      <mat-select [(ngModel)]="filter.country" (selectionChange)="filterTrips()">
+        <mat-option [value]="null">Wszystkie</mat-option>
+        <mat-option *ngFor="let country of countries" [value]="country">{{ country }}</mat-option>
+      </mat-select>
+    </mat-form-field>
 
-    <label for="date_end" class="mb-2">End Date:</label>
-    <input type="date" name="date" id="date_end" [(ngModel)]="filter.endDate" (change)="filterTrips()" class="form-control mb-2">
-
+    <mat-form-field>
+      <mat-label>Wybierz oceny</mat-label>
+      <mat-select [(ngModel)]="filter.rating" (selectionChange)="filterTrips()">
+        <mat-option [value]="null">Wszystkie</mat-option>
+        <mat-option *ngFor="let rating of [1,2,3,4,5]" [value]="rating">{{ rating }}</mat-option>
+      </mat-select>
+    </mat-form-field>
   </div>
+
   <div class="d-flex flex-column m-3">
+    <mat-form-field>
+      <input matInput [matDatepicker]="startDatePicker" placeholder="Choose a start date" [(ngModel)]="filter.startDate" (change)="filterTrips()">
+      <mat-datepicker-toggle matSuffix [for]="startDatePicker"></mat-datepicker-toggle>
+      <mat-datepicker #startDatePicker></mat-datepicker>
+    </mat-form-field>
 
-    <label for="price_from" class="mb-2">Price From:</label>
-    <input type="number" name="price" id="price_from" [(ngModel)]="filter.priceFrom" (change)="filterTrips()" [value]="filter.priceFrom" class="form-control mb-2">
-
-    <label for="price_to" class="mb-2">Price To:</label>
-    <input type="number" name="price" id="price_to" [(ngModel)]="filter.priceTo" (change)="filterTrips()" [value]="filter.priceTo" class="form-control mb-2">
+    <mat-form-field>
+      <input matInput [matDatepicker]="endDatePicker" placeholder="Choose an end date" [(ngModel)]="filter.endDate" (change)="filterTrips()">
+      <mat-datepicker-toggle matSuffix [for]="endDatePicker"></mat-datepicker-toggle>
+      <mat-datepicker #endDatePicker></mat-datepicker>
+    </mat-form-field>
   </div>
 
-  <div class="dropdown m-3">
-    <button class="btn btn-secondary dropdown-toggle" type="button" id="ratingDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-      Select Rating
-    </button>
-    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-      <li *ngFor="let rating of [1,2,3,4,5]" class="dropdown-item" (click)="addRating(rating)">{{rating}}</li>
-    </ul>
-    <h2 class="mt-3">Selected:</h2>
-    <div>
-      <button *ngFor="let rating of filter.rating" class="btn btn-outline-secondary m-2" (click)="removeRating(rating)">
-        {{rating}}
-        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x" viewBox="0 0 16 16">
-          <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708"/>
-        </svg>
-      </button>
-    </div>
+  <div class="d-flex flex-column m-3">
+<!--    <mat-form-field>-->
+<!--      <mat-label>Price From:</mat-label>-->
+<!--      <mat-slider [(ngModel)]="filter.priceFrom" (input)="filterTrips()" [min]="lowestPrice()" [max]="highestPrice()" step="1"></mat-slider>-->
+<!--    </mat-form-field>-->
+
+<!--    <mat-form-field>-->
+<!--      <mat-label>Price To:</mat-label>-->
+<!--      <mat-slider [(ngModel)]="filter.priceTo" (input)="filterTrips()" [min]="lowestPrice()" [max]="highestPrice()" step="1"></mat-slider>-->
+<!--    </mat-form-field>-->
   </div>
 </div>
