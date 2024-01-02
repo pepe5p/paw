@@ -41,7 +41,7 @@ export class TripListComponent implements OnInit {
 
   currentPage = 1;
   pageSize = 12;
-  totalPages = 0;
+  totalPages = 1;
 
   trips: TripWithCumulatedReservations[] = [];
   allTrips: TripWithCumulatedReservations[] = [];
@@ -77,7 +77,7 @@ export class TripListComponent implements OnInit {
   }
 
   renderTrips() {
-    this.totalPages = Math.ceil(this.allTrips.length / this.pageSize);
+    this.totalPages = Math.max(1, Math.ceil(this.allTrips.length / this.pageSize));
     this.trips = this.allTrips.slice((this.currentPage - 1) * this.pageSize, this.currentPage * this.pageSize);
     const sortedTrips = [...this.allTrips]
     if (sortedTrips.length === 0) {

@@ -1,12 +1,20 @@
 <div class="container-fluid d-flex flex-column flex-lg-row">
-  <div class="d-flex flex-column m-3">
+  <div class="d-flex flex-column m-3 col">
     <mat-form-field>
-      <mat-label>Nazwa</mat-label>
+      <mat-label>Nazwa:</mat-label>
       <input matInput type="text" name="name" id="name" [(ngModel)]="filter.name" (keyup)="filterTrips()" class="form-control mb-3">
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>Cena od:</mat-label>
+      <input matInput type="number" name="price_from" id="price_from" [(ngModel)]="filter.priceFrom" (change)="filterTrips()" [min]="lowestPrice()" [max]="highestPrice()">
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>Cena do:</mat-label>
+      <input matInput type="number" name="price_to" id="price_to" [(ngModel)]="filter.priceTo" (change)="filterTrips()" [min]="lowestPrice()" [max]="highestPrice()">
     </mat-form-field>
   </div>
 
-  <div class="d-flex flex-column m-3">
+  <div class="d-flex flex-column m-3 col">
     <mat-form-field>
       <mat-label>Wybierz Kraj</mat-label>
       <mat-select [(ngModel)]="filter.country" (selectionChange)="filterTrips()">
@@ -24,29 +32,19 @@
     </mat-form-field>
   </div>
 
-  <div class="d-flex flex-column m-3">
+  <div class="d-flex flex-column m-3 col">
     <mat-form-field>
-      <input matInput [matDatepicker]="startDatePicker" placeholder="Choose a start date" [(ngModel)]="filter.startDate" (change)="filterTrips()">
+      <mat-label>Od daty:</mat-label>
+      <input matInput [matDatepicker]="startDatePicker" placeholder="Od daty" [(ngModel)]="filter.startDate" (change)="filterTrips()" [min]="nearestAndFurthestDates('startDate').furthest" [max]="nearestAndFurthestDates('startDate').nearest">
       <mat-datepicker-toggle matSuffix [for]="startDatePicker"></mat-datepicker-toggle>
       <mat-datepicker #startDatePicker></mat-datepicker>
     </mat-form-field>
 
     <mat-form-field>
-      <input matInput [matDatepicker]="endDatePicker" placeholder="Choose an end date" [(ngModel)]="filter.endDate" (change)="filterTrips()">
+      <mat-label>Do daty:</mat-label>
+      <input matInput [matDatepicker]="endDatePicker" placeholder="Do daty" [(ngModel)]="filter.endDate" (change)="filterTrips()" [min]="nearestAndFurthestDates('endDate').furthest" [max]="nearestAndFurthestDates('endDate').nearest">
       <mat-datepicker-toggle matSuffix [for]="endDatePicker"></mat-datepicker-toggle>
       <mat-datepicker #endDatePicker></mat-datepicker>
     </mat-form-field>
-  </div>
-
-  <div class="d-flex flex-column m-3">
-<!--    <mat-form-field>-->
-<!--      <mat-label>Price From:</mat-label>-->
-<!--      <mat-slider [(ngModel)]="filter.priceFrom" (input)="filterTrips()" [min]="lowestPrice()" [max]="highestPrice()" step="1"></mat-slider>-->
-<!--    </mat-form-field>-->
-
-<!--    <mat-form-field>-->
-<!--      <mat-label>Price To:</mat-label>-->
-<!--      <mat-slider [(ngModel)]="filter.priceTo" (input)="filterTrips()" [min]="lowestPrice()" [max]="highestPrice()" step="1"></mat-slider>-->
-<!--    </mat-form-field>-->
   </div>
 </div>

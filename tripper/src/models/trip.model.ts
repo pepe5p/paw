@@ -30,11 +30,11 @@ export interface TripWithCumulatedReservations extends TripWithReservation {
 }
 
 export interface TripFilter {
-  name: string | null
-  country: string[];
-  startDate: Timestamp | null;
-  endDate: Timestamp | null;
-  priceFrom: number | null;
-  priceTo: number | null;
+  name: string
+  country: string | null;
+  startDate: Date;
+  endDate: Date;
+  priceFrom: number;
+  priceTo: number;
   rating: number | null;
 }

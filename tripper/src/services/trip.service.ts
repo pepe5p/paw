@@ -1,7 +1,7 @@
 import {inject, Injectable, OnInit} from '@angular/core';
 import {BehaviorSubject, concatMap, forkJoin, from, map, Observable} from 'rxjs';
 import {Trip, TripData, TripFilter, TripWithReservation} from '../models/trip.model';
-import {collection, deleteDoc, doc, Firestore, getDoc, getDocs, setDoc,} from "@angular/fire/firestore";
+import {collection, deleteDoc, doc, Firestore, getDoc, getDocs, setDoc, Timestamp,} from "@angular/fire/firestore";
 
 @Injectable({
   providedIn: 'root',
@@ -119,17 +119,24 @@ export class TripService implements OnInit {
   }
 
   filterTrips(filter: TripFilter){
+    console.log(filter.startDate);
+    console.log(filter.endDate);
+
+    const startDate = filter.startDate ? Timestamp.fromDate(filter.startDate) : null;
+    const endDate = filter.endDate ? Timestamp.fromDate(filter.endDate) : null;
+
     this.getTrips().subscribe((trips) => {
       const filteredTrips = trips.filter((trip) => {
-        let name = filter.name === null || trip.name.toLowerCase().includes(filter.name.toLowerCase());
-        let country = filter.country.length === 0 || filter.country.includes(trip.country);
-        let startDate = filter.startDate === null || filter.startDate <= trip.startDate;
-        let endDate = filter.endDate === null || filter.endDate >= trip.endDate;
-        let priceFrom = filter.priceFrom === null || filter.priceFrom <= trip.pricePLN
-        let priceTo = filter.priceTo === null || filter.priceTo >= trip.pricePLN;
-        let rating = filter.rating === null || filter.rating <= Math.floor(trip.stars);
-        return name && country && startDate && endDate && priceFrom && priceTo && rating;
+        let name = filter.name == '' || trip.name.toLowerCase().includes(filter.name.toLowerCase());
+        let country = filter.country == null || filter.country === trip.country;
+        let startDateCheck = startDate == null || startDate.toMillis() <= trip.startDate.toMillis();
+        let endDateCheck = endDate == null || endDate.toMillis() >= trip.endDate.toMillis();
+        let priceFrom = filter.priceFrom == null || filter.priceFrom <= trip.pricePLN;
+        let priceTo = filter.priceTo == null || filter.priceTo >= trip.pricePLN;
+        let rating = filter.rating == null || filter.rating <= Math.floor(trip.stars);
+        return name && country && startDateCheck && endDateCheck && priceFrom && priceTo && rating;
       });
+
       this.tripsSubject.next(filteredTrips);
     });
   }

@@ -1,7 +1,7 @@
 import {Component, inject, OnInit} from '@angular/core';
 import {FormsModule} from "@angular/forms";
 import {NgForOf} from "@angular/common";
-import {Trip, TripFilter, TripWithReviews} from "../../models/trip.model";
+import {Trip, TripFilter, TripWithReservation, TripWithReviews} from "../../models/trip.model";
 import {TripService} from "../../services/trip.service";
 import {MatSelectModule} from "@angular/material/select";
 import {MatDatepickerModule} from "@angular/material/datepicker";
@@ -28,28 +28,44 @@ export class FilterComponent implements OnInit {
   trips: TripWithReviews[] = [];
   countries: string[] = [];
   filter: TripFilter = {
-    name: null,
-    country: [],
-    startDate: null,
-    endDate: null,
-    priceFrom: null,
-    priceTo: null,
+    name: "",
+    country: null,
+    startDate: new Date(),
+    endDate: new Date(),
+    priceFrom: 0,
+    priceTo: 0,
     rating: null,
   };
 
   filterTrips() {
+    if (this.filter.priceFrom > this.filter.priceTo) {
+      this.filter.priceFrom = this.filter.priceTo;
+    }
+    if (this.filter.startDate > this.filter.endDate) {
+      this.filter.startDate = this.filter.endDate;
+    }
+    if (this.filter.priceFrom < this.lowestPrice()) {
+      this.filter.priceFrom = this.lowestPrice();
+    }
+    if (this.filter.priceTo > this.highestPrice()) {
+      this.filter.priceTo = this.highestPrice();
+    }
     this.tripService.filterTrips(this.filter);
   };
 
   ngOnInit(): void {
     this.tripService.getTrips().subscribe((trips) => {
-      this.trips = trips;
-      this.countries = this.trips.map((trip: Trip) => trip.country);
+      this.renderFilters(trips);
     });
-    this.tripService.trips$.subscribe((trips) => {
-      this.trips = trips;
-      this.countries = this.trips.map((trip: Trip) => trip.country);
-    });
+  }
+
+  renderFilters(trips: TripWithReservation[]): void {
+    this.trips = trips;
+    this.countries = this.trips.map((trip: Trip) => trip.country);
+    this.filter.priceFrom = this.lowestPrice();
+    this.filter.priceTo = this.highestPrice();
+    this.filter.startDate = this.nearestAndFurthestDates('startDate').furthest;
+    this.filter.endDate = this.nearestAndFurthestDates('endDate').nearest;
   }
 
   highestPrice(): number {
@@ -60,4 +76,18 @@ export class FilterComponent implements OnInit {
     return Math.min(...this.trips.map((trip: Trip) => trip.pricePLN));
   }
 
+  nearestAndFurthestDates(property: 'startDate' | 'endDate'): { nearest: Date, furthest: Date } {
+    const currentDate = new Date();
+    const dates = this.trips.map((trip: Trip) => trip[property].toDate());
+
+    const nearestDate = dates.reduce((nearest, current) => (
+      Math.abs(current.getTime() - currentDate.getTime()) < Math.abs(nearest.getTime() - currentDate.getTime()) ? current : nearest
+    ), dates[0]);
+
+    const furthestDate = dates.reduce((furthest, current) => (
+      Math.abs(current.getTime() - currentDate.getTime()) > Math.abs(furthest.getTime() - currentDate.getTime()) ? current : furthest
+    ), dates[0]);
+
+    return { nearest: nearestDate, furthest: furthestDate };
+  }
 }

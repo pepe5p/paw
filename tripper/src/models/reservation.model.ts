@@ -11,6 +11,3 @@ export interface ReservationWithTrip extends Reservation {
   trip: Trip;
   selected: boolean;
 }
-
-// TODO: zadania9: 5, 6
-// TODO: zadania10: 1
