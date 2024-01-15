@@ -129,12 +129,12 @@ export class TripService implements OnInit {
       const filteredTrips = trips.filter((trip) => {
         let name = filter.name == '' || trip.name.toLowerCase().includes(filter.name.toLowerCase());
         let country = filter.country == null || filter.country === trip.country;
-        let startDateCheck = startDate == null || startDate.toMillis() <= trip.startDate.toMillis();
-        let endDateCheck = endDate == null || endDate.toMillis() >= trip.endDate.toMillis();
+        // let startDateCheck = startDate == null || startDate.toMillis() <= trip.startDate.toMillis();
+        // let endDateCheck = endDate == null || endDate.toMillis() >= trip.endDate.toMillis();
         let priceFrom = filter.priceFrom == null || filter.priceFrom <= trip.pricePLN;
         let priceTo = filter.priceTo == null || filter.priceTo >= trip.pricePLN;
         let rating = filter.rating == null || filter.rating <= Math.floor(trip.stars);
-        return name && country && startDateCheck && endDateCheck && priceFrom && priceTo && rating;
+        return name && country && priceFrom && priceTo && rating;
       });
 
       this.tripsSubject.next(filteredTrips);
